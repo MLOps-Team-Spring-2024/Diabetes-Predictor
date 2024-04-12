@@ -1,0 +1,2 @@
+from mlops_test_cookiecutter.models.model import MyNeuralNet
+from mlops_test_cookiecutter.predict_model import predict
