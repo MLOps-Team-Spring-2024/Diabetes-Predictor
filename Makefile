@@ -8,7 +8,7 @@
 # GLOBALS                                                                       #
 #################################################################################
 
-PROJECT_NAME = mlops_test_cookiecutter
+PROJECT_NAME = mlops_team_project
 PYTHON_VERSION = 3.11
 PYTHON_INTERPRETER = python
 
@@ -27,8 +27,9 @@ create_environment:
 	conda create --name $(PROJECT_NAME) python=$(PYTHON_VERSION) --no-default-packages -y
 
 ## Install Python Dependencies
+## may need to fix the first line
 requirements:
-	$(PYTHON_INTERPRETER) -m pip install -U pip setuptools wheel
+	$(PYTHON_INTERPRETER) -m pip install -U pip poetry-core
 	$(PYTHON_INTERPRETER) -m pip install -r requirements.txt
 	$(PYTHON_INTERPRETER) -m pip install -e .
 

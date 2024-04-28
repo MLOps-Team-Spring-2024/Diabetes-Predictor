@@ -1,27 +1,14 @@
-[build-system]
-requires = ["setuptools", "setuptools-scm"]
-build-backend = "setuptools.build_meta"
-
-[project]
-name = "mlops_test_cookiecutter"
-version = "0.0.1"
-description = "This is a test initial code organization for MLOps tasks"
-authors = [
-  { name = "Henry", email = "henrydebuc@gmail.com" },
-]
-
+[tool.poetry]
+name = "mlops_team_project"
+version = "0.1.0"
+description = "MLOps spring 2024 team project"
+authors = ["Your Name <you@example.com>"]
 readme = "README.md"
-requires-python = ">=3.11"
-dynamic = ["dependencies", "optional-dependencies"]
 
-[tool.setuptools]
-packages = ["mlops_test_cookiecutter"]
+[tool.poetry.dependencies]
+python = "^3.11"
 
-[tool.setuptools.dynamic]
-dependencies = {file = ["requirements.txt"]}
 
-[tool.setuptools.dynamic.optional-dependencies]
-dev = {file = ['requirements_dev.txt']}
-
-[tool.ruff]
-line-length = 120
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
