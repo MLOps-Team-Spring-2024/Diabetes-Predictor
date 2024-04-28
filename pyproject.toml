@@ -2,7 +2,8 @@
 name = "mlops_team_project"
 version = "0.1.0"
 description = "MLOps spring 2024 team project"
-authors = ["Matt Soria <msoria6@depaul.edu>"]
+authors = ["Matt Soria <msoria6@depaul.edu>",
+            "Henry deBuchananne <hdebucha@depaul.edu"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
