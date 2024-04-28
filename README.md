@@ -1,6 +1,6 @@
 # Spring 2024 MLOps Team __ Project
 
-##Template Info
+## Template Info
 ### Project structure 
 <details>
 <summary>  
