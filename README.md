@@ -1,8 +1,11 @@
-# mlops_test_cookiecutter
+# Spring 2024 MLOps Team __ Project
 
-This is a test initial code organization for MLOps tasks
-
-## Project structure
+##Template Info
+### Project structure 
+<details>
+<summary>  
+  see more
+</summary>
 
 The directory structure of the project looks like this:
 
@@ -60,14 +63,9 @@ The directory structure of the project looks like this:
 
 Created using [cookiecutter template](https://github.com/cookiecutter/cookiecutter) for getting
 started with Machine Learning Operations (MLOps).
+</details>
 
-## Running the Program
 
-There are three primary commands as of writing this Readme
-```txt
-make data <- runs the make_dataset.py file
-make clean <- cleans the __pycache__ files
-make requirements <- installs everything in the requirements.txt file
-```
+<!-- see cookiecutter template for basic info on running the previous version of this -->
 
 
