@@ -2,11 +2,15 @@
 name = "mlops_team_project"
 version = "0.1.0"
 description = "MLOps spring 2024 team project"
-authors = ["Your Name <you@example.com>"]
+authors = ["Matt Soria <msoria6@depaul.edu>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
+jupyterlab = "^4.1.8"
+pandas = "^2.2.2"
+scikit-learn = "^1.4.2"
+xgboost = "^2.0.3"
 
 
 [build-system]
