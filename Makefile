@@ -22,20 +22,11 @@ mlops_init:
 mlops_deploy: mlops_init #after the colon we can put any number of commands that will have to run in that order to run the current command
 	echo "Deploying MLOps project"
 
-## Set up python interpreter environment
 create_environment:
-	conda create --name $(PROJECT_NAME) python=$(PYTHON_VERSION) --no-default-packages -y
+	poetry install
 
-## Install Python Dependencies
-## may need to fix the first line
-requirements:
-	$(PYTHON_INTERPRETER) -m pip install -U pip poetry-core
-	$(PYTHON_INTERPRETER) -m pip install -r requirements.txt
-	$(PYTHON_INTERPRETER) -m pip install -e .
-
-## Install Developer Python Dependencies
-dev_requirements: requirements
-	$(PYTHON_INTERPRETER) -m pip install .["dev"]
+run_cli:
+	poetry run python mlops_team_project/models/cli.py 
 
 ## Delete all compiled Python files
 clean:
@@ -46,10 +37,6 @@ clean:
 #################################################################################
 # PROJECT RULES                                                                 #
 #################################################################################
-
-## Process raw data into processed data
-data:
-	python $(PROJECT_NAME)/data/make_dataset.py
 
 #################################################################################
 # Documentation RULES                                                           #
