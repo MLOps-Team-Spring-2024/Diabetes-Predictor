@@ -5,44 +5,16 @@ on:
     types: [opened]
 
 jobs:
-  request-reviews:
+  auto-request-reviews:
+    name: Auto Request Review
     runs-on: ubuntu-latest
     steps: 
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '20.x'
-      - name: Request Reviews from Team
-        uses: actions/github-script@v5
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: | 
-            const github = require('@actions/github')
-            const context = github.context
-            const oktokit = github.getOktokit(process.env.GITHUB_TOKEN);
+    - name: Auto Request Review
+      uses: necojackarc/auto-request-review@v0.13.0
+      with: 
+        token: ${{ secrets.GITHUB_TOKEN }}
+        config: .github/auto_request_review.yml
+        
+
             
-            try{
-              const response = await github.pulls.listReviewRequests({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                pull_number: context.payload.pull_request.number,
-                });
-
-                const reviewers = await github.repos.listCollaborators({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  });
-
-                const author = context.payload.pull_request.user.login;
-                const reviewersToRequest = reviewers.data
-                                                    .filter(reviewer => reviewer.login !== author)
-                                                    .map(reviewer => reviewer.login);
-                      await github.pulls.createReviewRequest({
-                        owner: context.repo.owner,
-                        repo: context.repo.repo,
-                        pull_number: context.payload.pull_request.number,
-                        reviewers: reviewersToRequest,
-                        });
-                } catch (error){
-                  console.log(error.message);
-                  process.exit(1);
-                }
+      
