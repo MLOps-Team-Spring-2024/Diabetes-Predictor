@@ -1,4 +1,4 @@
-# Spring 2024 MLOps Team __ Project
+# Spring 2024 MLOps Team Project: Diabetes-Predictor
 
 ## General Information
 

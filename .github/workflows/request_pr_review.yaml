@@ -1,0 +1,32 @@
+name : Request Review
+
+on:
+  pull_request:
+    types: [opened]
+
+jobs:
+  request-reviews:
+    runs-on: ubuntu-latest
+    steps: 
+      - name: Request Reviews from Team
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: | 
+            const response = await github.pulls.listReviewRequests({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number,
+              });
+              const reviewers = await github.repos.listCollaborators({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                })
+              const author = context.payload.pull_request.user.login;
+              const reviewersToRequest = reviewers.data.filter(reviewer => reviewer.login !== author)
+                                                        .map(reviewer => reviewer.login);
+                    await github.pulls.createReviewRequest({
+                      owner: context.repo.owner,
+                      repo: context.repo.repo,
+                      pull_number: context.payload.pull_request.number,
+                      reviewers: reviewersToRequest,
+                      });
