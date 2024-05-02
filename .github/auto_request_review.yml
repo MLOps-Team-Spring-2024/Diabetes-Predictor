@@ -1,0 +1,16 @@
+reviewers:
+
+  defaults:
+    - team
+
+  per_author:
+    HenrydeB:
+      - msoria17
+      - allanzguan
+    msoria17:
+      - HenrydeB
+      - allanzguan
+    allanzguan:
+      - HenrydeB
+      - msoria17
+
