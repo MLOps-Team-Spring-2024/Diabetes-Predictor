@@ -1,5 +1,6 @@
-import argparse
-
+import hydra
+from omegaconf import OmegaConf
+import omegaconf
 import pandas as pd
 
 from mlops_team_project.src.model.model import model
@@ -9,14 +10,16 @@ from mlops_team_project.src.preprocess.preprocess import (
 )
 
 
-def main() -> None:
+@hydra.main(version_base=None, config_path="config", config_name="default")
+def main(config) -> None:
     """
     Main function that runs the necessary steps for modeling.
-    """
-    parser = argparse.ArgumentParser(description="CLI for running XGBoost model")
-    parser.add_argument("-t", "--test", type=str)
 
-    args = parser.parse_args()
+    Args:
+        config: hydra config which includes hyper parameters for xgboost
+    """
+    print(f"conf = {OmegaConf.to_yaml(config)}")
+    hydra_params = config.experiment
 
     df = pd.read_csv("data/raw/diabetes_data.csv")
 
@@ -33,6 +36,7 @@ def main() -> None:
         X_test=X_test_normalized,
         y_train=y_train,
         y_test=y_test,
+        hyperparameters=hydra_params,
     )
 
 
