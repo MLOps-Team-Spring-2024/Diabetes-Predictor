@@ -1,0 +1,20 @@
+name : Request Review
+
+on:
+  pull_request:
+    types: [opened]
+
+jobs:
+  auto-request-reviews:
+    name: Auto Request Review
+    runs-on: ubuntu-latest
+    steps: 
+    - name: Auto Request Review
+      uses: necojackarc/auto-request-review@v0.13.0
+      with: 
+        token: ${{ secrets.AUTO_REQUEST_PR }}
+        config: .github/auto_request_review.yml
+        
+
+            
+      
