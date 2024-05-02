@@ -1,8 +1,23 @@
+
 # Spring 2024 MLOps Team __ Project
 
-## General Information
+## Team Members
+Herny deBuchananne
+Matthew Soria
+Allan Guan
 
-### Using Poetry
+## Data Overview
+The dataset titled "Diabetes, Hypertension and Stroke Prediction" on Kaggle, created by Prosper Chuks, is based on survey data from the Behavioral Risk Factor Surveillance System (BRFSS) for the year 2015. It includes 70,692 responses that have been cleaned for analysis. The data is structured to facilitate the prediction of diabetes, hypertension, and stroke using various health indicators. This dataset is particularly valuable for developing machine learning models aimed at predicting these conditions.
+
+For more detailed information, you can view the dataset directly on Kaggle: https://www.kaggle.com/datasets/prosperchuks/health-dataset
+
+## Objective
+The primary objective of the "Diabetes, Hypertension and Stroke Prediction" dataset is to facilitate the development and validation of predictive models that can accurately identify individuals at high risk of developing diabetes, hypertension, and stroke. By leveraging the comprehensive data collected from the Behavioral Risk Factor Surveillance System (BRFSS) of 2015, which includes a wide range of health indicators and demographic variables, researchers and data scientists can apply machine learning techniques to improve early diagnosis and preventive care strategies. This dataset aims to contribute to the broader field of healthcare analytics by providing a robust resource for studying the correlations and patterns that precede these serious health conditions.
+
+
+## Setting Up Environment 
+#### Using Poetry
+
 The virtual environment for this project uses Poetry, which needs to be set up on your local machine.
 
 `pip install poetry`
@@ -40,12 +55,16 @@ This doesn't necessarily deactive the environment. To do this you must the follo
 
 `deactivate`
 
-### Template Info
-#### Project structure 
+## Data 
+We have python codes to prepare the data. The code contains two functions. The first function splits the data into training and testing sets. The second function normalizes the data. The data was very clean from Kaggle.
+
+>[mlops_team_project/src/preprocess/preprocess.py](mlops_team_project/src/preprocess/preprocess.py)
+
+## Architectural Overview
+![Overview](https://github.com/MLOps-Team-Spring-2024/Diabetes-Predictor/tree/main/images/Overview.jpg)
+
+## Project structure 
 <details>
-<summary>  
-  see more
-</summary>
 
 The directory structure of the project looks like this:
 
@@ -101,11 +120,27 @@ The directory structure of the project looks like this:
 └── LICENSE              <- Open-source license if one is chosen
 ```
 
-Created using [cookiecutter template](https://github.com/cookiecutter/cookiecutter) for getting
-started with Machine Learning Operations (MLOps).
+
 </details>
 
 
-<!-- see cookiecutter template for basic info on running the previous version of this -->
+
+
+## Steps to Replicate Training and Evaluation
+
+TBA
+
+## Dependencies
+
+The dependencies are automatically managed by Poetry
+* python 3.11
+* jupyterlab 4.1.8
+* pandas 2.2.2
+* scikit-learn 1.4.2
+* xgboost 2.0.3
+* hydra-core 1.3.2
+
+### Contributions
+--link to doc file--
 
 
