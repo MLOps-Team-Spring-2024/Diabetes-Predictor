@@ -1,25 +1,19 @@
 name: mypy
 
-on: 
-  push:
-    paths:
-      - '*.py'
+on: [push]
 
 jobs:
   mypy:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: 3.11
-      - name: Checkout
-        uses: actions/checkout@v1
       - name: Install MyPy
         run: pip install mypy
-      - name: Mypy action
-        uses: sasanquaneuf/mypy-github-action@releases/v1.3
-        with:
-          checkName: 'mypy'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+      - name: Run MyPy
+        run: |
+          find . -name "*.py" | xargs mypy
