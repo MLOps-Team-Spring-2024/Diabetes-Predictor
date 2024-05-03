@@ -12,11 +12,7 @@ jobs:
           python-version: 3.11
       - run: pip install ruff
       - run: |
-          ruff check .
-          ruff_exit_code=$?
-          if[ $ruff_exit_code -ne 0]; then
-            ruff fix .
-          fi
+          ruff check --fix
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: 'code style -w ruff'

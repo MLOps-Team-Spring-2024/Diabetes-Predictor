@@ -16,4 +16,4 @@ jobs:
         run: pip install mypy
       - name: Run MyPy
         run: |
-          find . -name "*.py" | xargs mypy
+          find . -name "*.py" -exec mypy {} +
