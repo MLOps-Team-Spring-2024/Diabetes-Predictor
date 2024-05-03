@@ -2,9 +2,9 @@ from typing import List
 
 import numpy as np
 import omegaconf
+import xgboost as xgb
 from sklearn.metrics import classification_report
 from sklearn.model_selection import cross_val_score
-import xgboost as xgb
 
 
 def model(

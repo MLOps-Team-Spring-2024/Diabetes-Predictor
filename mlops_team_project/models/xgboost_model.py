@@ -1,12 +1,12 @@
 import hydra
-from omegaconf import OmegaConf
 import omegaconf
 import pandas as pd
+from omegaconf import OmegaConf
 
 from mlops_team_project.src.model.model import model
 from mlops_team_project.src.preprocess.preprocess import (
-    train_test_split_and_write,
     min_max_scale_and_write,
+    train_test_split_and_write,
 )
 
 
