@@ -1,18 +1,24 @@
-name: MyPy
-on: [push]
+name: mypy
+on: 
+  push:
+    paths:
+      - '*.py'
+
 jobs:
-  build:
+  mypy:
     runs-on: ubuntu-latest
-    name: MyPy
     steps:
-      - uses: actions/checkout@v1
-      - name: set python env
-      - uses: actions/setup-python@v1
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: 3.11
-      - name: Install dependencies
-        run: |
-            pip install mypy
-      - name: mypy
-        run: |
-          mypy src/
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Install MyPy
+        run: pip install mypy
+      - name: Mypy action
+        uses: sasanquaneuf/mypy-github-action@releases/v1.3
+        with:
+          checkName: 'mypy'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
