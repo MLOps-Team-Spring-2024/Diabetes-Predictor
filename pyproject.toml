@@ -3,7 +3,8 @@ name = "mlops_team_project"
 version = "0.1.0"
 description = "MLOps spring 2024 team project"
 authors = ["Matt Soria <msoria6@depaul.edu>",
-            "Henry deBuchananne <hdebucha@depaul.edu>"]
+            "Henry deBuchananne <hdebucha@depaul.edu>",
+            "Allan Guan <aguan@depaul.edu>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
@@ -13,7 +14,12 @@ pandas = "^2.2.2"
 scikit-learn = "^1.4.2"
 xgboost = "^2.0.3"
 hydra-core = "^1.3.2"
+ruff = "^0.4.2"
+mypy = "^1.10.0"
 
+[tool.ruff]
+select = ["I"]
+line-length = 120
 
 [build-system]
 requires = ["poetry-core"]
