@@ -21,6 +21,9 @@ mypy = "^1.10.0"
 select = ["I"]
 line-length = 120
 
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

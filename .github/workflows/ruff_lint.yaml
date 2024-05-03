@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:    #Set up environment in container
       - uses: actions/checkout@v4
-      - uses: charboost/ruf-action@v1
+      - uses: charboost/ruff-action@v1
       - uses: action/setup-python@v5 
         with:
           python-version: 3.11
