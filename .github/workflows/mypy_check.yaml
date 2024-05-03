@@ -1,4 +1,5 @@
 name: mypy
+
 on: 
   push:
     paths:
