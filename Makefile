@@ -25,8 +25,11 @@ mlops_deploy: mlops_init #after the colon we can put any number of commands that
 create_environment:
 	poetry install
 
-run_cli:
-	poetry run python mlops_team_project/models/cli.py 
+run_model:
+	poetry run python mlops_team_project/models/xgboost_model.py 
+
+run_jupyter:
+	poetry run jupyter lab
 
 ## Delete all compiled Python files
 clean:
