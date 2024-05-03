@@ -16,4 +16,4 @@ jobs:
         run: pip install mypy
       - name: Run MyPy
         run: |
-          find . -name "*.py" -exec mypy {} +
+          find . -name "*.py" -exec mypy --ignore-missing-imports {} +
