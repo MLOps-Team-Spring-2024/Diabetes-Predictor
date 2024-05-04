@@ -1,5 +1,5 @@
 name: ruff
-on:  [push]
+on:  [push, pull_request]
 env:
   CONFIG_LOCATION: ./.ruff.toml
 jobs:
