@@ -1,5 +1,8 @@
 name: ruff
-on:  [push, pull_request]
+on:  
+  push:
+  pull_request:
+    types: [opened]
 env:
   CONFIG_LOCATION: ./.ruff.toml
 jobs:

@@ -1,6 +1,9 @@
 name: mypy
 
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
+    types: [opened]
 
 jobs:
   mypy:
@@ -15,7 +18,9 @@ jobs:
       - name: Install Poetry
         run: pip install poetry
       - name: get poetry dependencies
-        run: poetry install
+        run: |
+          poetry config pypi-token.pypi $ {{ secrets.AUTO_REQUEST_PR }}
+          poetry install
       - name: add mypy to poetry env
         run: poetry add mypy
       - name: run mypy
