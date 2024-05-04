@@ -18,7 +18,7 @@ from mlops_team_project.src.preprocess import (
 @hydra.main(version_base=None, config_path="config", config_name="default")
 def main(config) -> None:
     """
-    Main function that runs the necessary steps for modeling.
+    Main function that runs the necessary steps for modeling
 
     Args:
         config: hydra config which includes hyper parameters for xgboost
