@@ -19,4 +19,4 @@ jobs:
       - name: add mypy to poetry env
         run: poetry add mypy
       - name: run mypy
-        run: poetry run mypy . --ignore-missing-inputs
+        run: poetry run mypy . --ignore-missing-imports
