@@ -36,6 +36,13 @@ clean:
 	find . -type f -name "*.py[co]" -delete
 	find . -type d -name "__pycache__" -delete
 
+#run ruff checks 
+ruff:
+	ruff check .
+	ruff format .
+
+mypy:
+	mypy .
 
 #################################################################################
 # PROJECT RULES                                                                 #

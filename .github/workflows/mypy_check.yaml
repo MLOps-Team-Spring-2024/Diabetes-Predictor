@@ -1,0 +1,27 @@
+name: mypy
+
+on:
+  push:
+  pull_request:
+    types: [opened]
+
+jobs:
+  mypy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.11
+      - name: Install Poetry
+        run: pip install poetry
+      - name: get poetry dependencies
+        run: |
+          poetry config pypi-token.pypi ${{ secrets.AUTO_REQUEST_PR }}
+          poetry install
+      - name: add mypy to poetry env
+        run: poetry add mypy
+      - name: run mypy
+        run: poetry run mypy -p mlops_team_project --ignore-missing-imports

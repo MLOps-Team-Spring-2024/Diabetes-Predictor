@@ -1,0 +1,26 @@
+name: ruff
+on:  
+  push:
+  pull_request:
+    types: [opened]
+env:
+  CONFIG_LOCATION: ./.ruff.toml
+jobs:
+  ruff:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:    #Set up environment in container
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5 
+        with:
+          python-version: 3.11
+      - run: pip install ruff
+      - run: |
+          ruff check --fix
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: 'code style -w ruff'
+          token: ${{ secrets.AUTO_REQUEST_PR }}
+           
+
