@@ -12,8 +12,11 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: 3.11
-      - name: Install MyPy
-        run: pip install mypy
-      - name: Run MyPy
-        run: |
-          find . -name "*.py" -exec mypy --ignore-missing-imports {} +
+      - name: Install Poetry
+        run: pip install poetry
+      - name: get poetry dependencies
+        run: poetry install
+      - name: add mypy to poetry env
+        run: poetry add mypy
+      - name: run mypy
+        run: poetry run mypy . --ignore-missing-inputs
