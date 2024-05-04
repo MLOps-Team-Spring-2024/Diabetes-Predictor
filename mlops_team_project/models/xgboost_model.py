@@ -3,11 +3,11 @@ from typing import List
 import hydra
 import numpy as np
 import omegaconf
-from omegaconf import OmegaConf
 import pandas as pd
+import xgboost as xgb
+from omegaconf import OmegaConf
 from sklearn.metrics import classification_report
 from sklearn.model_selection import cross_val_score
-import xgboost as xgb
 
 from mlops_team_project.src.preprocess import (
     min_max_scale_and_write,
