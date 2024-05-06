@@ -144,8 +144,17 @@ The dependencies are automatically managed by Poetry
 * scikit-learn 1.4.2
 * xgboost 2.0.3
 * hydra-core 1.3.2
+<<<<<<< Updated upstream
 
 ### Contributions
 --link to doc file--
+=======
+* ruff 0.4.2
+* mypy 1.10.0
+
+### Contributions
+Doc file containing detailed task and contribution
+[Part 1](/docs/Project_1_Tasks.docx)
+>>>>>>> Stashed changes
 
 
