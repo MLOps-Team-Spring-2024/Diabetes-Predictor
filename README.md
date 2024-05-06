@@ -65,6 +65,9 @@ We have python modules to prepare the data. The code contains two functions. The
 
 >[mlops_team_project/src/preprocess/preprocess.py](mlops_team_project/src/preprocess/preprocess.py)
 
+## Model
+The model we are using is Cross-validation from scikit-learn. Cross-validation is a statistical method used to evaluate the performance of machine learning models. It involves partitioning a dataset into complementary subsets, performing the analysis on one subset (called the training set), and validating the analysis on the other subset (called the validation set or testing set). This process is repeated multiple times, with different partitions, to reduce variability. The main types of cross-validation are K-fold and Leave-One-Out. Each provides a way to mitigate overfitting by ensuring that the model generalizes well to new data. For more detailed explanations and examples, you can check the [Scikit-Learn cross-validation documentation](https://scikit-learn.org/stable/modules/cross_validation.html "https://scikit-learn.org/stable/modules/cross_validation.html").
+
 ## Architectural Overview
 ![Overview](https://github.com/MLOps-Team-Spring-2024/Diabetes-Predictor/tree/main/images/Overview.jpg)
 
@@ -144,17 +147,11 @@ The dependencies are automatically managed by Poetry
 * scikit-learn 1.4.2
 * xgboost 2.0.3
 * hydra-core 1.3.2
-<<<<<<< Updated upstream
-
-### Contributions
---link to doc file--
-=======
 * ruff 0.4.2
 * mypy 1.10.0
 
 ### Contributions
 Doc file containing detailed task and contribution
 [Part 1](/docs/Project_1_Tasks.docx)
->>>>>>> Stashed changes
 
 
