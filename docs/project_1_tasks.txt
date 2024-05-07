@@ -1,14 +1,14 @@
 Henry deBuchananne:
-    - MyPy and Ruff Configuration & GitHub Actions
-    - Repository Creation
-    - Project Scope and Objectives
-    - Python Environment Creation (Poetry)
-    - Branching rules & collaboration rules (through GH action)
-    - Code Documentation (Ruff and MyPy)
+- MyPy and Ruff Configuration & GitHub Actions
+- Repository Creation
+- Project Scope and Objectives
+- Python Environment Creation (Poetry)
+- Branching rules & collaboration rules (through GH action)
+- Code Documentation (Ruff and MyPy)
 
 Allan:
--ReadMe write up
--Architectural Overview Diagram
+- ReadMe write up
+- Architectural Overview Diagram
 
 Matt Soria:
 - Data Preprocessing
