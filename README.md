@@ -13,6 +13,8 @@ For our project we decided to create a classifier to identify diabetes in patien
 
 The project primary objective is to facilitate the development and validation of predictive models that can accurately identify individuals at high risk of developing diabetes. By leveraging the comprehensive data collected from the Behavioral Risk Factor Surveillance System (BRFSS) of 2015, which includes a wide range of health indicators and demographic variables. Our team will apply machine learning techniques to improve early diagnosis and preventive care strategies. Our project aims to contribute to the broader field of healthcare analytics by providing a robust resource for studying the correlations and patterns that precede these serious health conditions.
 
+### Project Scope and Objective
+Additional scope and objective information can be found [here](./docs/source/overview.md)
 
 ## Data Overview
 The dataset titled "Diabetes, Hypertension and Stroke Prediction" on Kaggle, created by Prosper Chuks, is based on survey data from the Behavioral Risk Factor Surveillance System (BRFSS) for the year 2015. It includes 70,692 responses that have been cleaned for analysis. The data is structured to facilitate the prediction of diabetes, hypertension, and stroke using various health indicators. This dataset is particularly valuable for developing machine learning models aimed at predicting these conditions.
@@ -25,47 +27,60 @@ For more detailed information, you can view the dataset directly on Kaggle: http
 
 The virtual environment for this project uses Poetry, which needs to be set up on your local machine.
 
-`pip install poetry`
+```console
+pip install poetry
+```
 
 When Poetry is set up, a `pyproject.toml` file and a `poetry.lock` file are created if it is the first time, however there is already a `.toml` file created inour case.
 To create the virtual environment and corresponding packages for the project, you must install the dependencies and environment itself. We also want to keep our virtual environment
 within the project itself. To do this, run the following two commands
 
-`poetry config virtualenvs.in-project true`
-
-`poetry install`
+```console
+poetry config virtualenvs.in-project true
+poetry install
+```
 
 This will create your `.venv` file, which is our virtual environment.
 
 To run the code within the environment, run
 
-`poetry shell`
+```console
+poetry shell
+```
 
 Now you can run the project within this environment.
 
 If you want to add dependencies to the project, it is as simple as running
 
-`poetry add <dependency>`
+```console
+poetry add <dependency>
+```
 
 Which will automatically add the dependency to the `pyproject.toml` file. 
 Removing it is just as simple
 
-`poetry remove <dependency>`
+```console
+poetry remove <dependency>
+```
 
 To exit the virtual environment you can run 
 
-`exit`
+```console
+exit
+```
 
 This doesn't necessarily deactive the environment. To do this you must the following command within the shell.
 
-`deactivate`
+```console
+deactivate
+```
 
 ## Data Preprocessing
 We have python modules to prepare the data. The code contains two functions. The first function splits the data into training and testing sets. The second function normalizes the data. The data was very clean from Kaggle.
 
 >[mlops_team_project/src/preprocess.py](mlops_team_project/src/preprocess.py)
 
-These functions are called from the main entryp point of the model 
+These functions are called from the main entry point of the model 
 
 >[mlops_team_project/models/xgboost_model.py](mlops_team_project/models/xgboost_model.py)
 
@@ -148,6 +163,12 @@ Baseline Model
 Tuned Model 
 ![exp1](images/exp1.png)  
 
+## GitHub Actions
+
+To enhance collaboration and cohesiveness of our coding standards in our distributed environment, three GitHub Actions were created. The most basic action simply automatically creates a Pull Request review email upon the opening of a new Pull Request, automatically sending the request to other teammates when it has been pushed, which ensures that the PRs do not miss being reviewed.
+
+To establish cohesive coding standards and documentation standards, the two other GitHub actions implement Ruff, for styling, and MyPy for automated testing. The action for Ruff automatically checks all our code at PR opening and at every push, and if there is a need for reformatting, the action will automatically run ` fix ` according to our defined standards, and commit the fix accordingly. The MyPy action runs against all python code, scanning for any issues with formatting, typing, etc. and if any are detected, the PR will be unable to merge until these issues are remediated.
+
 ## Project structure 
 <details>
 
@@ -168,6 +189,9 @@ The directory structure of the project looks like this:
 │   ├── mkdocs.yml             <- Configuration file for mkdocs
 │   │
 │   └── source/                <- Source directory for documentation files
+│
+├── .github                    <- Source directory for GitHub Actions and configurations
+│     └── workflows            <- SubDirectory for the specific actions
 │
 ├── models                     <- Trained and serialized models, model predictions, or model summaries
 │
