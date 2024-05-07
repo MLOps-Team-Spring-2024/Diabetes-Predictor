@@ -2,9 +2,9 @@
 # Spring 2024 MLOps Team Project: Diabetes-Predictor
 
 ## Team Members
-Herny deBuchananne
-Matthew Soria
-Allan Guan
+Herny deBuchananne  
+Matthew Soria  
+Allan Guan  
 
 ## Project Description
 Diabetes is a significant health concern in the United States, affecting millions of individuals. According to the latest statistics, about 37.3 million Americans, or 11.3% of the population, are living with diabetes. This condition, which can lead to severe health complications such as heart disease, kidney failure, and blindness, is also a major cause of disability and mortality. The cost of managing diabetes is substantial, with billions spent each year on healthcare services, medications, and lost productivity. Efforts to improve diabetes management and prevention are crucial in addressing this public health issue .
@@ -69,7 +69,7 @@ We have python modules to prepare the data. The code contains two functions. The
 The model we are using is Cross-validation from scikit-learn. Cross-validation is a statistical method used to evaluate the performance of machine learning models. It involves partitioning a dataset into complementary subsets, performing the analysis on one subset (called the training set), and validating the analysis on the other subset (called the validation set or testing set). This process is repeated multiple times, with different partitions, to reduce variability. The main types of cross-validation are K-fold and Leave-One-Out. Each provides a way to mitigate overfitting by ensuring that the model generalizes well to new data. For more detailed explanations and examples, you can check the [Scikit-Learn cross-validation documentation](https://scikit-learn.org/stable/modules/cross_validation.html "https://scikit-learn.org/stable/modules/cross_validation.html").
 
 ## Architectural Overview
-![Overview](https://github.com/MLOps-Team-Spring-2024/Diabetes-Predictor/tree/main/images/Overview.jpg)
+![Overview](images/Overview.jpg)
 
 ## Project structure 
 <details>
@@ -98,22 +98,9 @@ The directory structure of the project looks like this:
 │
 ├── pyproject.toml       <- Project configuration file
 │
-├── reports              <- Generated analysis as HTML, PDF, LaTeX, etc.
-│   └── figures          <- Generated graphics and figures to be used in reporting
-│
-├── requirements.txt     <- The requirements file for reproducing the analysis environment
-|
-├── requirements_dev.txt <- The requirements file for reproducing the analysis environment
-│
 ├── tests                <- Test files
 │
-├── mlops_test_cookiecutter  <- Source code for use in this project.
-│   │
-│   ├── __init__.py      <- Makes folder a Python module
-│   │
-│   ├── data             <- Scripts to download or generate data
-│   │   ├── __init__.py
-│   │   └── make_dataset.py
+├── mlops_team_project  <- Source code for use in this project.
 │   │
 │   ├── models           <- model implementations, training script and prediction script
 │   │   ├── __init__.py
@@ -152,6 +139,6 @@ The dependencies are automatically managed by Poetry
 
 ### Contributions
 Doc file containing detailed task and contribution
-[Part 1](/docs/Project_1_Tasks.docx)
+[Part 1](/docs/Project_1_Tasks.yaml)
 
 
