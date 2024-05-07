@@ -60,16 +60,93 @@ This doesn't necessarily deactive the environment. To do this you must the follo
 
 `deactivate`
 
-## Data 
+## Data Preprocessing
 We have python modules to prepare the data. The code contains two functions. The first function splits the data into training and testing sets. The second function normalizes the data. The data was very clean from Kaggle.
 
->[mlops_team_project/src/preprocess/preprocess.py](mlops_team_project/src/preprocess/preprocess.py)
+>[mlops_team_project/src/preprocess.py](mlops_team_project/src/preprocess.py)
+
+These functions are called from the main entryp point of the model 
+
+>[mlops_team_project/models/xgboost_model.py](mlops_team_project/models/xgboost_model.py)
+
+So when the model is invoked the steps will automatically run.
+
+## EDA
+We first started working with our model in Jupyter notebooks. You can start the notebook environment through make with
+
+```
+make run_jupyter
+```
+
+We didn't find any missing values or any non continuous numbers in our dataset to start. The dataset was pretty clean that we got from kaggle.
+
+![eda1](images/eda1.png) 
+
+However we did need to normalize the data so we used the MinMax scaler from scikit learn. The dataset also needed to be split into training and testing - and we used the scikit learn train_test_split function for that. Once that was finished we started our baseline model and experiment models.
+
+>[notebooks/1_modeling.ipynb](notebooks/1_modeling.ipynb)
+
+We set up our modeling function so it could pickup hydra config when it runs in production through decorators and it also could be injected in notebooks with different experiments from hydra. This allows use maximum flexibility in the notebooks to iterate quickly.  
+
+```python
+# run xgboost with exp1 params
+with initialize(version_base=None, config_path="../mlops_team_project/models/config"):
+    hydra_params = compose(overrides=["+experiment=exp1"])
+    print(hydra_params)
+
+    model(
+        X_train=X_train_normalized,
+        X_test=X_test_normalized,
+        y_train=y_train,
+        y_test=y_test,
+        hyperparameters=hydra_params.experiment,
+    )
+```
 
 ## Model
-The model we are using is Cross-validation from scikit-learn. Cross-validation is a statistical method used to evaluate the performance of machine learning models. It involves partitioning a dataset into complementary subsets, performing the analysis on one subset (called the training set), and validating the analysis on the other subset (called the validation set or testing set). This process is repeated multiple times, with different partitions, to reduce variability. The main types of cross-validation are K-fold and Leave-One-Out. Each provides a way to mitigate overfitting by ensuring that the model generalizes well to new data. For more detailed explanations and examples, you can check the [Scikit-Learn cross-validation documentation](https://scikit-learn.org/stable/modules/cross_validation.html "https://scikit-learn.org/stable/modules/cross_validation.html").
+For our model we chose to use Gradient Boosting since we are predicting outcomes. Gradient Boosting is known to perform well on prediction tasks and allow for flexibitiy via different parameters.
 
-## Architectural Overview
-![Overview](images/Overview.jpg)
+Gradient boosting uses an ensemble technique - and typically it's creating multipe learners in the form of decision trees.  
+
+As it iterates through the trees it's attempting to minimize errors and improve the accuracy.  
+
+We used XGBoost as our framework to run this type of model.
+
+## Steps to Replicate Training and Evaluation
+When you run
+
+```
+make run_model
+```
+
+or
+
+```
+poetry run python mlops_team_project/models/xgboost_model.py
+```
+
+the model with split the dataset into train/testing sets and normalize. So preprocessing is automated through the entry point. We will optimize this in later tasks to only happen once when we start automatically chaining different tasks together.  
+
+We are using Hydra for our hyperparameter tuning. We have a baseline configuration that runs without tuning any parameters and we have an experiment that tunes paramaters.  
+
+>[mlops_team_project/models/config/default.yaml](mlops_team_project/models/config/default.yaml)  
+
+When you want to run a new experiment you either change the value in the file above. If the experiment doesn't exist it first needs to be added to the experiments folder in `mlops_team_project/models/config/experiment`
+
+We used Cross validation for our evaluation process with k folds = 5.  
+
+We mainly our looking at accuracy scores to choose the best - model while making sure the model is not overfitting.  
+
+Our baseline model outperformed out tuned model. Baseline had a 78%/74% split between train and test. This shows it didn't overfit and generalized well. However our tuned model had a split of 83%/73% so it was showing more overfitting and the testing accuracy went down slightly. So we would move forward with out basline model based on this evaluation.  
+
+Evaluation results below.
+
+Baseline Model  
+
+![baseline](images/baseline.png)  
+
+Tuned Model 
+![exp1](images/exp1.png)  
 
 ## Project structure 
 <details>
@@ -78,57 +155,56 @@ The directory structure of the project looks like this:
 
 ```txt
 
-├── Makefile             <- Makefile with convenience commands like `make data` or `make train`
-├── README.md            <- The top-level README for developers using this project.
+├── Makefile                   <- Makefile with convenience commands like `make data` or `make train`
+├── README.md                  <- The top-level README for developers using this project.
 ├── data
-│   ├── processed        <- The final, canonical data sets for modeling.
-│   └── raw              <- The original, immutable data dump.
+│   ├── processed              <- The final, canonical data sets for modeling.
+│   └── raw                    <- The original, immutable data dump.
 │
-├── docs                 <- Documentation folder
+├── docs                       <- Documentation folder
 │   │
-│   ├── index.md         <- Homepage for your documentation
+│   ├── index.md               <- Homepage for your documentation
 │   │
-│   ├── mkdocs.yml       <- Configuration file for mkdocs
+│   ├── mkdocs.yml             <- Configuration file for mkdocs
 │   │
-│   └── source/          <- Source directory for documentation files
+│   └── source/                <- Source directory for documentation files
 │
-├── models               <- Trained and serialized models, model predictions, or model summaries
+├── models                     <- Trained and serialized models, model predictions, or model summaries
 │
-├── notebooks            <- Jupyter notebooks.
+├── notebooks                  <- Jupyter notebooks.
 │
-├── pyproject.toml       <- Project configuration file
+├── pyproject.toml             <- Project configuration file
 │
-├── tests                <- Test files
+├── poetry.lock                <- Poetry lock file that contains locked dependency versions
 │
-├── mlops_team_project  <- Source code for use in this project.
+├── tests                      <- Test files
+│
+├── mlops_team_project         <- Source code for use in this project.
 │   │
-│   ├── models           <- model implementations, training script and prediction script
-│   │   ├── __init__.py
-│   │   ├── model.py
+│   ├── models                 <- Model implementations, training script and prediction script
+│   │   │
+│   │   ├── config             <- Folder container hydra config files
+│   │   │
+│   │   ├── xgboost_model.py   <- Entry point that runs our xgboost model
 │   │
-│   ├── visualization    <- Scripts to create exploratory and results oriented visualizations
-│   │   ├── __init__.py
-│   │   └── visualize.py
-│   ├── train_model.py   <- script for training the model
-│   └── predict_model.py <- script for predicting from a model
-│
-└── LICENSE              <- Open-source license if one is chosen
+│   ├── src                    <- Scripts to create exploratory and results oriented visualizations
+│       |
+│       └── preprocess.py      <- Functions that split into train/test and normalize
+│   
+└── LICENSE                    <- Open-source license if one is chosen
 ```
-
 
 </details>
 
-
-
-
-## Steps to Replicate Training and Evaluation
-
-TBA
+## What to improve on in future iterations
+Right now when the model runs we are splitting up the full dataset into train/test and normalizing every time. We only need to do this once. However since we don't know how we are going to output our model and since these tasks run very quickly we decided to wait until we have more information in later phases to optimize this part of our code.
 
 ## Dependencies
+- Make
+- Python 3.11
+- Poetry
 
-The dependencies are automatically managed by Poetry
-* python 3.11
+The python package dependencies are automatically managed by Poetry
 * jupyterlab 4.1.8
 * pandas 2.2.2
 * scikit-learn 1.4.2
@@ -137,8 +213,11 @@ The dependencies are automatically managed by Poetry
 * ruff 0.4.2
 * mypy 1.10.0
 
+## Architectural Overview
+![Overview](images/Overview.jpg)  
+
 ### Contributions
 Doc file containing detailed task and contribution
-[Part 1](/docs/Project_1_Tasks.yaml)
+[Part 1](/docs/project_1_tasks.txt)
 
 
