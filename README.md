@@ -1,8 +1,28 @@
+
 # Spring 2024 MLOps Team Project: Diabetes-Predictor
 
-## General Information
+## Team Members
+Herny deBuchananne
+Matthew Soria
+Allan Guan
 
-### Using Poetry
+## Project Description
+Diabetes is a significant health concern in the United States, affecting millions of individuals. According to the latest statistics, about 37.3 million Americans, or 11.3% of the population, are living with diabetes. This condition, which can lead to severe health complications such as heart disease, kidney failure, and blindness, is also a major cause of disability and mortality. The cost of managing diabetes is substantial, with billions spent each year on healthcare services, medications, and lost productivity. Efforts to improve diabetes management and prevention are crucial in addressing this public health issue .
+
+For our project we decided to create a classifier to identify diabetes in patients. Our dataset includes Age, Sex, HighChol, CholCheck, BMI, Smoker, HeartDiseasorAttack, PhysActivity, Fruits, Veggies, HvyAlcoholConsump, GenHlth, MentHlth, DiffWalk, Stroke, HighBP and Diabetes. Based on this dataset we will classify patients as non-diabetic or diabetic. In order to classify patients we will use the Gradient Boosting machine learning technique. The framework we chose for Gradient Boosting was XGBoost.
+
+The project primary objective is to facilitate the development and validation of predictive models that can accurately identify individuals at high risk of developing diabetes. By leveraging the comprehensive data collected from the Behavioral Risk Factor Surveillance System (BRFSS) of 2015, which includes a wide range of health indicators and demographic variables. Our team will apply machine learning techniques to improve early diagnosis and preventive care strategies. Our project aims to contribute to the broader field of healthcare analytics by providing a robust resource for studying the correlations and patterns that precede these serious health conditions.
+
+
+## Data Overview
+The dataset titled "Diabetes, Hypertension and Stroke Prediction" on Kaggle, created by Prosper Chuks, is based on survey data from the Behavioral Risk Factor Surveillance System (BRFSS) for the year 2015. It includes 70,692 responses that have been cleaned for analysis. The data is structured to facilitate the prediction of diabetes, hypertension, and stroke using various health indicators. This dataset is particularly valuable for developing machine learning models aimed at predicting these conditions.
+
+For more detailed information, you can view the dataset directly on Kaggle: https://www.kaggle.com/datasets/prosperchuks/health-dataset
+
+
+## Setting Up Environment 
+#### Using Poetry
+
 The virtual environment for this project uses Poetry, which needs to be set up on your local machine.
 
 `pip install poetry`
@@ -40,12 +60,19 @@ This doesn't necessarily deactive the environment. To do this you must the follo
 
 `deactivate`
 
-### Template Info
-#### Project structure 
+## Data 
+We have python modules to prepare the data. The code contains two functions. The first function splits the data into training and testing sets. The second function normalizes the data. The data was very clean from Kaggle.
+
+>[mlops_team_project/src/preprocess/preprocess.py](mlops_team_project/src/preprocess/preprocess.py)
+
+## Model
+The model we are using is Cross-validation from scikit-learn. Cross-validation is a statistical method used to evaluate the performance of machine learning models. It involves partitioning a dataset into complementary subsets, performing the analysis on one subset (called the training set), and validating the analysis on the other subset (called the validation set or testing set). This process is repeated multiple times, with different partitions, to reduce variability. The main types of cross-validation are K-fold and Leave-One-Out. Each provides a way to mitigate overfitting by ensuring that the model generalizes well to new data. For more detailed explanations and examples, you can check the [Scikit-Learn cross-validation documentation](https://scikit-learn.org/stable/modules/cross_validation.html "https://scikit-learn.org/stable/modules/cross_validation.html").
+
+## Architectural Overview
+![Overview](https://github.com/MLOps-Team-Spring-2024/Diabetes-Predictor/tree/main/images/Overview.jpg)
+
+## Project structure 
 <details>
-<summary>  
-  see more
-</summary>
 
 The directory structure of the project looks like this:
 
@@ -101,11 +128,30 @@ The directory structure of the project looks like this:
 └── LICENSE              <- Open-source license if one is chosen
 ```
 
-Created using [cookiecutter template](https://github.com/cookiecutter/cookiecutter) for getting
-started with Machine Learning Operations (MLOps).
+
 </details>
 
 
-<!-- see cookiecutter template for basic info on running the previous version of this -->
+
+
+## Steps to Replicate Training and Evaluation
+
+TBA
+
+## Dependencies
+
+The dependencies are automatically managed by Poetry
+* python 3.11
+* jupyterlab 4.1.8
+* pandas 2.2.2
+* scikit-learn 1.4.2
+* xgboost 2.0.3
+* hydra-core 1.3.2
+* ruff 0.4.2
+* mypy 1.10.0
+
+### Contributions
+Doc file containing detailed task and contribution
+[Part 1](/docs/Project_1_Tasks.docx)
 
 
