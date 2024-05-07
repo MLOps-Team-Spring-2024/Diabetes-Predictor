@@ -27,40 +27,53 @@ For more detailed information, you can view the dataset directly on Kaggle: http
 
 The virtual environment for this project uses Poetry, which needs to be set up on your local machine.
 
-`pip install poetry`
+```console
+pip install poetry
+```
 
 When Poetry is set up, a `pyproject.toml` file and a `poetry.lock` file are created if it is the first time, however there is already a `.toml` file created inour case.
 To create the virtual environment and corresponding packages for the project, you must install the dependencies and environment itself. We also want to keep our virtual environment
 within the project itself. To do this, run the following two commands
 
-`poetry config virtualenvs.in-project true`
-
-`poetry install`
+```console
+poetry config virtualenvs.in-project true
+poetry install
+```
 
 This will create your `.venv` file, which is our virtual environment.
 
 To run the code within the environment, run
 
-`poetry shell`
+```console
+poetry shell
+```
 
 Now you can run the project within this environment.
 
 If you want to add dependencies to the project, it is as simple as running
 
-`poetry add <dependency>`
+```console
+poetry add <dependency>
+```
 
 Which will automatically add the dependency to the `pyproject.toml` file. 
 Removing it is just as simple
 
-`poetry remove <dependency>`
+```console
+poetry remove <dependency>
+```
 
 To exit the virtual environment you can run 
 
-`exit`
+```console
+exit
+```
 
 This doesn't necessarily deactive the environment. To do this you must the following command within the shell.
 
-`deactivate`
+```console
+deactivate
+```
 
 ## Data Preprocessing
 We have python modules to prepare the data. The code contains two functions. The first function splits the data into training and testing sets. The second function normalizes the data. The data was very clean from Kaggle.
@@ -178,8 +191,8 @@ The directory structure of the project looks like this:
 │   └── source/                <- Source directory for documentation files
 │
 ├── .github                    <- Source directory for GitHub Actions and configurations
-|     └── workflows            <- SubDirectory for the specific actions
-|
+│     └── workflows            <- SubDirectory for the specific actions
+│
 ├── models                     <- Trained and serialized models, model predictions, or model summaries
 │
 ├── notebooks                  <- Jupyter notebooks.
