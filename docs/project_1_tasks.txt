@@ -6,7 +6,9 @@ Henry deBuchananne:
     - Branching rules & collaboration rules (through GH action)
     - Code Documentation (Ruff and MyPy)
 
-Allan
+Allan:
+-ReadMe write up
+-Architectural Overview Diagram
 
 Matt Soria:
 - Data Preprocessing
