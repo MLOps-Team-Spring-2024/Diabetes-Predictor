@@ -1,0 +1,9 @@
+Henry
+
+Allan
+
+Matt Soria:
+- Data Preprocessing
+- Model Training
+- Model Evaluation
+- Hydra Configuration

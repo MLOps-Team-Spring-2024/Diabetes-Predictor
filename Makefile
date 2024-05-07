@@ -16,12 +16,6 @@ PYTHON_INTERPRETER = python
 # COMMANDS                                                                      #
 #################################################################################
 
-mlops_init:
-	echo "Initializing MLOps project"
-
-mlops_deploy: mlops_init #after the colon we can put any number of commands that will have to run in that order to run the current command
-	echo "Deploying MLOps project"
-
 create_environment:
 	poetry install
 
