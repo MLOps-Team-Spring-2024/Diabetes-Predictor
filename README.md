@@ -80,7 +80,7 @@ We have python modules to prepare the data. The code contains two functions. The
 
 >[mlops_team_project/src/preprocess.py](mlops_team_project/src/preprocess.py)
 
-These functions are called from the main entryp point of the model 
+These functions are called from the main entry point of the model 
 
 >[mlops_team_project/models/xgboost_model.py](mlops_team_project/models/xgboost_model.py)
 
