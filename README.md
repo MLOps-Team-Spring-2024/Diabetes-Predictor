@@ -13,6 +13,8 @@ For our project we decided to create a classifier to identify diabetes in patien
 
 The project primary objective is to facilitate the development and validation of predictive models that can accurately identify individuals at high risk of developing diabetes. By leveraging the comprehensive data collected from the Behavioral Risk Factor Surveillance System (BRFSS) of 2015, which includes a wide range of health indicators and demographic variables. Our team will apply machine learning techniques to improve early diagnosis and preventive care strategies. Our project aims to contribute to the broader field of healthcare analytics by providing a robust resource for studying the correlations and patterns that precede these serious health conditions.
 
+### Project Scope and Objective
+Additional scope and objective information can be found [here](./docs/source/overview.md)
 
 ## Data Overview
 The dataset titled "Diabetes, Hypertension and Stroke Prediction" on Kaggle, created by Prosper Chuks, is based on survey data from the Behavioral Risk Factor Surveillance System (BRFSS) for the year 2015. It includes 70,692 responses that have been cleaned for analysis. The data is structured to facilitate the prediction of diabetes, hypertension, and stroke using various health indicators. This dataset is particularly valuable for developing machine learning models aimed at predicting these conditions.
@@ -148,6 +150,12 @@ Baseline Model
 Tuned Model 
 ![exp1](images/exp1.png)  
 
+## GitHub Actions
+
+To enhance collaboration and cohesiveness of our coding standards in our distributed environment, three GitHub Actions were created. The most basic action simply automatically creates a Pull Request review email upon the opening of a new Pull Request, automatically sending the request to other teammates when it has been pushed, which ensures that the PRs do not miss being reviewed.
+
+To establish cohesive coding standards and documentation standards, the two other GitHub actions implement Ruff, for styling, and MyPy for automated testing. The action for Ruff automatically checks all our code at PR opening and at every push, and if there is a need for reformatting, the action will automatically run ` fix ` according to our defined standards, and commit the fix accordingly. The MyPy action runs against all python code, scanning for any issues with formatting, typing, etc. and if any are detected, the PR will be unable to merge until these issues are remediated.
+
 ## Project structure 
 <details>
 
@@ -169,6 +177,9 @@ The directory structure of the project looks like this:
 │   │
 │   └── source/                <- Source directory for documentation files
 │
+├── .github                    <- Source directory for GitHub Actions and configurations
+|     └── workflows            <- SubDirectory for the specific actions
+|
 ├── models                     <- Trained and serialized models, model predictions, or model summaries
 │
 ├── notebooks                  <- Jupyter notebooks.
