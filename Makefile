@@ -46,14 +46,6 @@ mypy:
 # Documentation RULES                                                           #
 #################################################################################
 
-## Build documentation
-build_documentation: dev_requirements
-	mkdocs build --config-file docs/mkdocs.yaml --site-dir build
-
-## Serve documentation
-serve_documentation: dev_requirements
-	mkdocs serve --config-file docs/mkdocs.yaml
-
 #################################################################################
 # Self Documenting Commands                                                     #
 #################################################################################
