@@ -60,11 +60,11 @@ deactivate
 ## Data Preprocessing
 We have python modules to prepare the data. The code contains two functions. The first function splits the data into training and testing sets. The second function normalizes the data. The data was very clean from Kaggle.
 
->[mlops_team_project/src/preprocess.py](mlops_team_project/src/preprocess.py)
+>[mlops_team_project/src/preprocess.py](../../mlops_team_project/src/preprocess.py)
 
 These functions are called from the main entry point of the model 
 
->[mlops_team_project/models/xgboost_model.py](mlops_team_project/models/xgboost_model.py)
+>[mlops_team_project/models/xgboost_model.py](../../mlops_team_project/models/xgboost_model.py)
 
 So when the model is invoked the steps will automatically run.
 
@@ -77,11 +77,11 @@ make run_jupyter
 
 We didn't find any missing values or any non continuous numbers in our dataset to start. The dataset was pretty clean that we got from kaggle.
 
-![eda1](images/eda1.png) 
+![eda1](../../images/eda1.png) 
 
 However we did need to normalize the data so we used the MinMax scaler from scikit learn. The dataset also needed to be split into training and testing - and we used the scikit learn train_test_split function for that. Once that was finished we started our baseline model and experiment models.
 
->[notebooks/1_modeling.ipynb](notebooks/1_modeling.ipynb)
+>[notebooks/1_modeling.ipynb](../../notebooks/1_modeling.ipynb)
 
 We set up our modeling function so it could pickup hydra config when it runs in production through decorators and it also could be injected in notebooks with different experiments from hydra. This allows use maximum flexibility in the notebooks to iterate quickly.  
 
@@ -126,7 +126,7 @@ the model with split the dataset into train/testing sets and normalize. So prepr
 
 We are using Hydra for our hyperparameter tuning. We have a baseline configuration that runs without tuning any parameters and we have an experiment that tunes paramaters.  
 
->[mlops_team_project/models/config/default.yaml](mlops_team_project/models/config/default.yaml)  
+>[mlops_team_project/models/config/default.yaml](../../mlops_team_project/models/config/default.yaml)  
 
 When you want to run a new experiment you either change the value in the file above. If the experiment doesn't exist it first needs to be added to the experiments folder in `mlops_team_project/models/config/experiment`
 
@@ -140,10 +140,10 @@ Evaluation results below.
 
 Baseline Model  
 
-![baseline](images/baseline.png)  
+![baseline](../../images/baseline.png)  
 
 Tuned Model 
-![exp1](images/exp1.png)  
+![exp1](../../images/exp1.png)  
 
 ## GitHub Actions
 
@@ -155,10 +155,10 @@ To establish cohesive coding standards and documentation standards, the two othe
 Right now when the model runs we are splitting up the full dataset into train/test and normalizing every time. We only need to do this once. However since we don't know how we are going to output our model and since these tasks run very quickly we decided to wait until we have more information in later phases to optimize this part of our code.
 
 ## Architectural Overview
-![Overview](images/Overview.jpg)  
+![Overview](../../images/Overview.jpg)  
 
 ### Contributions
 Doc file containing detailed task and contribution
-[Part 1](/docs/project_1_tasks.txt)
+[Part 1](../project_1_tasks.txt)
 
 
