@@ -1,11 +1,15 @@
+import argparse
+from dataclasses import dataclass
 from typing import List
 
-import hydra
 import numpy as np
 import omegaconf
 import pandas as pd
+import wandb
 import xgboost as xgb
+from hydra import compose, initialize
 from omegaconf import OmegaConf
+from omegaconf.dictconfig import DictConfig
 from sklearn.metrics import classification_report
 from sklearn.model_selection import cross_val_score
 
@@ -15,13 +19,19 @@ from mlops_team_project.src.preprocess import (
 )
 
 
-@hydra.main(version_base=None, config_path="config", config_name="default")
-def main(config) -> None:
+@dataclass
+class ModelResponse:
+    train_accuracy: float
+    test_accuracy: float
+
+
+def main(config: DictConfig, track_wandb: bool, wandb_project_name: str) -> None:
     """
     Main function that runs the necessary steps for modeling
 
     Args:
         config: hydra config which includes hyper parameters for xgboost
+        track_wandb: boolean to determine if Weights and Biases is used
     """
     print(f"conf = {OmegaConf.to_yaml(config)}")
     hydra_params = config.experiment
@@ -36,13 +46,20 @@ def main(config) -> None:
         X_train=X_train, X_test=X_test, write_path="data/processed"
     )
 
-    model(
+    model_response = model(
         X_train=X_train_normalized,
         X_test=X_test_normalized,
         y_train=y_train,
         y_test=y_test,
         hyperparameters=hydra_params,
     )
+
+    if track_wandb:
+        wandb.init(project=wandb_project_name)
+        wandb_config = wandb.config
+        wandb_config.config = hydra_params
+        wandb.log({"Train accuracy": model_response.train_accuracy})
+        wandb.log({"Test accuracy": model_response.test_accuracy})
 
 
 def model(
@@ -52,7 +69,7 @@ def model(
     y_test: np.ndarray,
     hyperparameters: omegaconf.dictconfig.DictConfig,
     target_names: List[str] = ["non-diabetic", "diabetic"],
-) -> None:
+) -> ModelResponse:
     """
     Runs the XGBoost model.
 
@@ -75,11 +92,40 @@ def model(
 
     print(f"cv scores = {cv_scores}")
     print(f"cv scores avg = {cv_scores.mean()}")
-    print(
-        f"Training: {model.score(X_train, y_train)}, Testing: {model.score(X_test, y_test)}\n"
-    )
+
+    train_accuracy = model.score(X_train, y_train)
+    test_accuracy = model.score(X_test, y_test)
+
+    print(f"Training: {train_accuracy}, Testing: {test_accuracy}\n")
     print(classification_report(y_test, base_model_preds, target_names=target_names))
+
+    return ModelResponse(train_accuracy, test_accuracy)
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description="CLI for xgboost model.")
+
+    parser.add_argument(
+        "--hydra_experiment",
+        type=str,
+        default="baseline",
+        help="Hydra experiment yaml file",
+    )
+    parser.add_argument(
+        "--wandb", type=bool, default=False, help="Track model with Weights and Biases"
+    )
+    parser.add_argument(
+        "--wandb_project_name",
+        type=str,
+        default="se489-project",
+        help="Project name for Weights and Biases",
+    )
+
+    args = parser.parse_args()
+
+    print(f"hydra experiment = {args.hydra_experiment}")
+
+    with initialize(version_base=None, config_path="config"):
+        hydra_params = compose(overrides=[f"+experiment={args.hydra_experiment}"])
+
+        main(hydra_params, args.wandb, args.wandb_project_name)

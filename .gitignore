@@ -178,3 +178,6 @@ cython_debug/
 
 # hydra directory
 outputs
+
+# wandb
+wandb
