@@ -2,16 +2,16 @@ import argparse
 from dataclasses import dataclass
 from typing import List
 
-from hydra import compose, initialize
 import numpy as np
 import omegaconf
-from omegaconf import OmegaConf
-from omegaconf.dictconfig import DictConfig
 import pandas as pd
-from sklearn.metrics import classification_report
-from sklearn.model_selection import cross_val_score
 import wandb
 import xgboost as xgb
+from hydra import compose, initialize
+from omegaconf import OmegaConf
+from omegaconf.dictconfig import DictConfig
+from sklearn.metrics import classification_report
+from sklearn.model_selection import cross_val_score
 
 from mlops_team_project.src.preprocess import (
     min_max_scale_and_write,
