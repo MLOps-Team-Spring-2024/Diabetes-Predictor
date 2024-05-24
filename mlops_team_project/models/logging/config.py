@@ -1,7 +1,8 @@
 import logging
 import sys
-from pathlib import Path
 from logging.config import dictConfig
+from pathlib import Path
+
 import config
 
 __file__ = "config.py"

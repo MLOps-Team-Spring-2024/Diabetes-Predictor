@@ -1,3 +1,6 @@
+import logging
+import logging.config
+from pathlib import Path
 from typing import List
 
 import hydra
@@ -5,11 +8,8 @@ import numpy as np
 import omegaconf
 import pandas as pd
 import xgboost as xgb
-import logging
-import logging.config
-from pathlib import Path
-from rich.logging import RichHandler
 from omegaconf import OmegaConf
+from rich.logging import RichHandler
 from sklearn.metrics import classification_report
 from sklearn.model_selection import cross_val_score
 
