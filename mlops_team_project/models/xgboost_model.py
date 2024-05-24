@@ -1,8 +1,8 @@
+import argparse
 import logging
 import logging.config
-from pathlib import Path
-import argparse
 from dataclasses import dataclass
+from pathlib import Path
 from typing import List
 
 import numpy as np
@@ -12,8 +12,8 @@ import wandb
 import xgboost as xgb
 from hydra import compose, initialize
 from omegaconf import OmegaConf
-from rich.logging import RichHandler
 from omegaconf.dictconfig import DictConfig
+from rich.logging import RichHandler
 from sklearn.metrics import classification_report
 from sklearn.model_selection import cross_val_score
 
