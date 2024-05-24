@@ -1,4 +1,5 @@
 import argparse
+import os
 from dataclasses import dataclass
 from typing import List
 
@@ -7,12 +8,12 @@ import omegaconf
 import pandas as pd
 import wandb
 import xgboost as xgb
-import os
 from hydra import compose, initialize
 from omegaconf import OmegaConf
 from omegaconf.dictconfig import DictConfig
 from sklearn.metrics import classification_report
 from sklearn.model_selection import cross_val_score
+from torch.profiler import ProfilerActivity, profile
 
 from mlops_team_project.src.preprocess import (
     min_max_scale_and_write,
@@ -26,7 +27,7 @@ class ModelResponse:
     test_accuracy: float
 
 
-def main(config: DictConfig, track_wandb: bool, wandb_project_name: str) -> None:
+def main(config: DictConfig, track_wandb: bool, wandb_project_name: str, torch_profile: bool) -> None:
     """
     Main function that runs the necessary steps for modeling
 
@@ -47,6 +48,12 @@ def main(config: DictConfig, track_wandb: bool, wandb_project_name: str) -> None
         X_train=X_train, X_test=X_test, write_path="data/processed"
     )
 
+    prof = None
+
+    if torch_profile:
+        prof = profile(activities=[ProfilerActivity.CPU], record_shapes= True, profile_memory=True)
+        prof.start()
+
     model_response = model(
         X_train=X_train_normalized,
         X_test=X_test_normalized,
@@ -54,6 +61,13 @@ def main(config: DictConfig, track_wandb: bool, wandb_project_name: str) -> None
         y_test=y_test,
         hyperparameters=hydra_params,
     )
+
+
+    if torch_profile:
+        prof.stop()
+        print(prof.key_averages().table(sort_by="cpu_time_total", row_limit=10))
+        print(prof.key_averages(group_by_input_shape=True).table(sort_by="cpu_time_total", row_limit=30))
+        prof.export_chrome_trace("model_trace.json") #will be adjusted for docker
 
     if track_wandb:
         wandb_api_key = os.getenv("WANDB_API_KEY")
@@ -125,6 +139,13 @@ if __name__ == "__main__":
         help="Project name for Weights and Biases",
     )
 
+    parser.add_argument(
+        "--torch_profile",
+        type=bool,
+        default=False,
+        help="Profile model using the PyTorch profiler"
+    )
+
     args = parser.parse_args()
 
     print(f"hydra experiment = {args.hydra_experiment}")
@@ -132,4 +153,4 @@ if __name__ == "__main__":
     with initialize(version_base=None, config_path="config"):
         hydra_params = compose(overrides=[f"+experiment={args.hydra_experiment}"])
 
-        main(hydra_params, args.wandb, args.wandb_project_name)
+        main(hydra_params, args.wandb, args.wandb_project_name, args.torch_profile)

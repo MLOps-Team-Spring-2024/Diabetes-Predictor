@@ -31,6 +31,9 @@ wandb_login:
 wandb_login_relogin:
 	poetry run wandb login --relogin
 
+run_profiler:
+    poetry run python mlops_team_project/models/xgboost_model.py --torch_profile True
+
 ## Delete all compiled Python files
 clean:
 	find . -type f -name "*.py[co]" -delete
