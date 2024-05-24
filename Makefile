@@ -25,6 +25,12 @@ run_model:
 run_jupyter:
 	poetry run jupyter lab
 
+wandb_login:
+	poetry run wandb login
+
+wandb_login_relogin:
+	poetry run wandb login --relogin
+
 ## Delete all compiled Python files
 clean:
 	find . -type f -name "*.py[co]" -delete
