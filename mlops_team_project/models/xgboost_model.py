@@ -1,11 +1,8 @@
-<<<<<<< 19-logging
 import logging
 import logging.config
 from pathlib import Path
-=======
 import argparse
 from dataclasses import dataclass
->>>>>>> main
 from typing import List
 
 import numpy as np
@@ -15,11 +12,8 @@ import wandb
 import xgboost as xgb
 from hydra import compose, initialize
 from omegaconf import OmegaConf
-<<<<<<< 19-logging
 from rich.logging import RichHandler
-=======
 from omegaconf.dictconfig import DictConfig
->>>>>>> main
 from sklearn.metrics import classification_report
 from sklearn.model_selection import cross_val_score
 
@@ -113,16 +107,11 @@ def model(
     print(f"Training: {train_accuracy}, Testing: {test_accuracy}\n")
     print(classification_report(y_test, base_model_preds, target_names=target_names))
 
-<<<<<<< 19-logging
-    
-    
     logging.info(f"cv scores = {cv_scores}\ncv scores avg = {cv_scores.mean()}\nTraining: {model.score(X_train, y_train)}, Testing: {model.score(X_test, y_test)}")
     
     logging.info(classification_report(y_test, base_model_preds, target_names=target_names))
-=======
+    
     return ModelResponse(train_accuracy, test_accuracy)
-
->>>>>>> main
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="CLI for xgboost model.")
