@@ -16,11 +16,8 @@ COPY . .
 #Install dependencies, except dev dependencies just in case
 RUN poetry install --no-dev
 
-#login to wandb (need to pass in a cmd arg for the login stuff)
-RUN make wandb_login
+ENTRYPOINT ["poetry", "run", "python", "mlops_team_project/models/xgboost_model.py"]
 
-ENTRYPOINT ["make"]
-
-CMD ["run_model"]
+#CMD ["run_model"]
 
 

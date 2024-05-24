@@ -7,6 +7,7 @@ import omegaconf
 import pandas as pd
 import wandb
 import xgboost as xgb
+import os
 from hydra import compose, initialize
 from omegaconf import OmegaConf
 from omegaconf.dictconfig import DictConfig
@@ -55,6 +56,9 @@ def main(config: DictConfig, track_wandb: bool, wandb_project_name: str) -> None
     )
 
     if track_wandb:
+        wandb_api_key = os.getenv("WANDB_API_KEY")
+        if wandb_api_key:
+            wandb.login(key=wandb_api_key)
         wandb.init(project=wandb_project_name)
         wandb_config = wandb.config
         wandb_config.config = hydra_params
