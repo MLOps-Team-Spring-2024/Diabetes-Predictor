@@ -48,9 +48,6 @@ def main(config: DictConfig, track_wandb: bool, wandb_project_name: str) -> None
         X_train=X_train, X_test=X_test, write_path="data/processed"
     )
 
-    prof = profile(activities=[ProfilerActivity.CPU], record_shapes=True, profile_memory=True)
-    prof.start()
-
     model_response = model(
         X_train=X_train_normalized,
         X_test=X_test_normalized,
@@ -58,11 +55,6 @@ def main(config: DictConfig, track_wandb: bool, wandb_project_name: str) -> None
         y_test=y_test,
         hyperparameters=hydra_params,
     )
-
-    prof.stop()
-    print(prof.key_averages().table(sort_by="cpu_time_total", row_limit=10))
-    print(prof.key_averages(group_by_input_shape=True).table(sort_by="cpu_time_total", row_limit=30))
-    prof.export_chrome_trace("model_trace.json")  #will be adjusted for docker
 
     if track_wandb:
         wandb_api_key = os.getenv("WANDB_API_KEY")
@@ -97,6 +89,9 @@ def model(
         random_state=hyperparameters.seed,
         n_estimators=hyperparameters.n_estimators,
     )
+    #begin profile block
+    prof = profile(activities=[ProfilerActivity.CPU], record_shapes=True, profile_memory=True)
+    prof.start()
 
     cv_scores = cross_val_score(model, X_train, y_train, cv=5)
 
@@ -111,6 +106,11 @@ def model(
 
     print(f"Training: {train_accuracy}, Testing: {test_accuracy}\n")
     print(classification_report(y_test, base_model_preds, target_names=target_names))
+
+    prof.stop()
+    print(prof.key_averages().table(sort_by="cpu_time_total", row_limit=10))
+    print(prof.key_averages(group_by_input_shape=True).table(sort_by="cpu_time_total", row_limit=30))
+    prof.export_chrome_trace("model_trace.json")  #will be adjusted for docker
 
     return ModelResponse(train_accuracy, test_accuracy)
 
