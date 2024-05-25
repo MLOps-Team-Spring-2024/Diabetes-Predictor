@@ -183,4 +183,4 @@ outputs
 wandb
 
 #profiling
-./profiling
+/profiling/
