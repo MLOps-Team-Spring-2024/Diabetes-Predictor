@@ -5,7 +5,7 @@
   "record_shapes": 1,
   "traceEvents": [
   {
-    "ph": "X", "cat": "Trace", "ts": 1716580178541569, "dur": 1158617,
+    "ph": "X", "cat": "Trace", "ts": 1716671982508160, "dur": 1305443,
     "pid": "Spans", "tid": "PyTorch Profiler",
     "name": "PyTorch Profiler (0)",
     "args": {
@@ -13,7 +13,7 @@
     }
   },
   {
-    "name": "process_sort_index", "ph": "M", "ts": 1716580178541569,
+    "name": "process_sort_index", "ph": "M", "ts": 1716671982508160,
     "pid": "Spans", "tid": 0,
     "args": {
       "sort_index": 536870912
@@ -21,11 +21,11 @@
   },
   {
     "name": "Iteration Start: PyTorch Profiler", "ph": "i", "s": "g",
-    "pid": "Traces", "tid": "Trace PyTorch Profiler", "ts": 1716580178541569
+    "pid": "Traces", "tid": "Trace PyTorch Profiler", "ts": 1716671982508160
   },
   {
     "name": "Record Window End", "ph": "i", "s": "g",
-    "pid": "", "tid": "", "ts": 1716580179700277
+    "pid": "", "tid": "", "ts": 1716671983813685
   }
   ],
   "traceName": "model_trace.json"

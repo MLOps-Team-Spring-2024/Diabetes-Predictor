@@ -31,8 +31,11 @@ wandb_login:
 wandb_login_relogin:
 	poetry run wandb login --relogin
 
-run_profiler:
-    poetry run python mlops_team_project/models/xgboost_model.py --torch_profile True
+cprofile_cumtime:
+	poetry run python -m cProfile -o cumtimeOutput.prof -s cumtime mlops_team_project/models/xgboost_model.py
+
+cprofile_tottime:
+	poetry run python -m cProfile -o tottimeOutput.prof -s tottime mlops_team_project/models/xgboost_model.py
 
 ## Delete all compiled Python files
 clean:
