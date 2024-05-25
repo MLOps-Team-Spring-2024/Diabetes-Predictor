@@ -68,6 +68,35 @@ Now your report has been created and published. However it still needs to be sha
 Copy the link and share!
 https://api.wandb.ai/links/msoria/u629g7n2
 
+## Performance Profiling
+
+We are able to profile our project's performance using three different tools: `cProfile` and `snakeviz` (used in tandem), and the `PyTorch profiler`.
+Profile logs are found in the `profiling` directory.
+
+### cProfile and Snakeviz
+In order to use in our configuration, cProfile and snakeviz must be used together. To do this, one can run the model with cProfile, and output the result 
+into a .prof file with the following command.
+`poetry run python -m cProfile -o <output file>.prof -s <sort order> mlops_team_project/models/xgboost_model.py`
+
+The `-s` flag refers to the sort order of the output. Included in the makefile are commands to run this with either `cumtime` or `tottime` as the sort order.
+To run a different configuration, you must manually input the desired sort order and file output.
+
+To visualize the outputs, we use snakeviz. To execute this visualization tool, run `snakeviz <file name>.prof`, which will provide a link in your terminal to
+a visualization hosted on your locally.
+
+![share](/images/snakeviz.PNG)
+
+### PyTorch Profiling
+
+To profile our machine learning functions, we have implemented PyTorch to profile our function calls within the `xgboost_model.model()` function.
+The visualization of this is done using tensorboard. To run tensorboard, you just have to run `make tensorboard` and this will open
+the tensorboard visualizer for the project. The traces for tensorboard are found in `./profiling/model_run`.
+
+![share](/images/tensorboard.PNG)
+
+As of now, the profiling is set up to run per model run, so to do multiple iterations of training of the model for each run, there will need to be some refactoring.
+For each model training, the PyTorch profiler must be stepped forward. Be sure to include `prof.step()` at the end of each iteration of the loop.
+
 ## Project structure 
 <details>
 

@@ -32,10 +32,13 @@ wandb_login_relogin:
 	poetry run wandb login --relogin
 
 cprofile_cumtime:
-	poetry run python -m cProfile -o cumtimeOutput.prof -s cumtime mlops_team_project/models/xgboost_model.py
+	poetry run python -m cProfile -o ./profiling/cumtimeOutput.prof -s cumtime mlops_team_project/models/xgboost_model.py
 
 cprofile_tottime:
-	poetry run python -m cProfile -o tottimeOutput.prof -s tottime mlops_team_project/models/xgboost_model.py
+	poetry run python -m cProfile -o ./profiling/tottimeOutput.prof -s tottime mlops_team_project/models/xgboost_model.py
+
+tensorboard:
+	tensorboard --logdir=./profiling/model_run
 
 ## Delete all compiled Python files
 clean:

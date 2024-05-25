@@ -1,5 +1,4 @@
 import argparse
-import os
 from dataclasses import dataclass
 from typing import List
 
@@ -13,7 +12,7 @@ from omegaconf import OmegaConf
 from omegaconf.dictconfig import DictConfig
 from sklearn.metrics import classification_report
 from sklearn.model_selection import cross_val_score
-from torch.profiler import ProfilerActivity, profile, record_function
+from torch.profiler import ProfilerActivity, profile, record_function, tensorboard_trace_handler
 
 from mlops_team_project.src.preprocess import (
     min_max_scale_and_write,
@@ -47,24 +46,31 @@ def main(config: DictConfig, track_wandb: bool, wandb_project_name: str) -> None
     X_train_normalized, X_test_normalized = min_max_scale_and_write(
         X_train=X_train, X_test=X_test, write_path="data/processed"
     )
+    '''
+        NOTE: to profile over multiple runs, make sure to include prof.step() on each iteration
+        ex: when looping, on each iteration include prof.step()
+    '''
+    #begin profile block
+    with profile(activities=[ProfilerActivity.CPU],
+                 record_shapes=True,
+                 profile_memory=True,
+                 on_trace_ready=tensorboard_trace_handler("./profiling/model_run")
+                 ) as prof:
+                    model_response = model(
+                        X_train=X_train_normalized,
+                        X_test=X_test_normalized,
+                        y_train=y_train,
+                        y_test=y_test,
+                        hyperparameters=hydra_params,
+                    )
 
-    model_response = model(
-        X_train=X_train_normalized,
-        X_test=X_test_normalized,
-        y_train=y_train,
-        y_test=y_test,
-        hyperparameters=hydra_params,
-    )
-
-    if track_wandb:
-        wandb_api_key = os.getenv("WANDB_API_KEY")
-        if wandb_api_key:
-            wandb.login(key=wandb_api_key)
-        wandb.init(project=wandb_project_name)
-        wandb_config = wandb.config
-        wandb_config.config = hydra_params
-        wandb.log({"Train accuracy": model_response.train_accuracy})
-        wandb.log({"Test accuracy": model_response.test_accuracy})
+                    if track_wandb:
+                        wandb.init(project=wandb_project_name)
+                        wandb_config = wandb.config
+                        wandb_config.config = hydra_params
+                        wandb.log({"Train accuracy": model_response.train_accuracy})
+                        wandb.log({"Test accuracy": model_response.test_accuracy})
+                    prof.step()
 
 
 def model(
@@ -89,9 +95,6 @@ def model(
         random_state=hyperparameters.seed,
         n_estimators=hyperparameters.n_estimators,
     )
-    #begin profile block
-    prof = profile(activities=[ProfilerActivity.CPU], record_shapes=True, profile_memory=True)
-    prof.start()
 
     cv_scores = cross_val_score(model, X_train, y_train, cv=5)
 
@@ -106,11 +109,6 @@ def model(
 
     print(f"Training: {train_accuracy}, Testing: {test_accuracy}\n")
     print(classification_report(y_test, base_model_preds, target_names=target_names))
-
-    prof.stop()
-    print(prof.key_averages().table(sort_by="cpu_time_total", row_limit=10))
-    print(prof.key_averages(group_by_input_shape=True).table(sort_by="cpu_time_total", row_limit=30))
-    prof.export_chrome_trace("model_trace.json")  #will be adjusted for docker
 
     return ModelResponse(train_accuracy, test_accuracy)
 

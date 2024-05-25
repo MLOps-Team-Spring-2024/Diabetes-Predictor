@@ -181,3 +181,6 @@ outputs
 
 # wandb
 wandb
+
+#profiling
+./profiling
