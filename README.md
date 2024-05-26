@@ -68,6 +68,10 @@ Now your report has been created and published. However it still needs to be sha
 Copy the link and share!
 https://api.wandb.ai/links/msoria/u629g7n2
 
+### Application Logging
+We are using python's built in logging along wiht rich for formatting.
+We are currently loggin the model result. The log can be found inside the logging folder at the same level as the model.
+
 ## Project structure 
 <details>
 
@@ -106,6 +110,12 @@ The directory structure of the project looks like this:
 │   │
 │   ├── models                 <- Model implementations, training script and prediction script
 │   │   │
+│   │   ├── logging
+│   │   │   │
+│   │   │   ├── logging.config <- Logging configurations
+│   │   │   │
+│   │   │   └── logs           <- Contain .log files
+│   │   │
 │   │   ├── config             <- Folder container hydra config files
 │   │   │
 │   │   ├── xgboost_model.py   <- Entry point that runs our xgboost model
@@ -133,6 +143,7 @@ The python package dependencies are automatically managed by Poetry
 * ruff 0.4.2
 * mypy 1.10.0
 * wandb 0.17.0
+* rich 13.3.2
 
 ### Contributions
 Doc file containing detailed task and contribution
