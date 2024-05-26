@@ -1,5 +1,8 @@
 import argparse
+import logging
+import logging.config
 from dataclasses import dataclass
+from pathlib import Path
 from typing import List
 
 import numpy as np
@@ -10,6 +13,7 @@ import xgboost as xgb
 from hydra import compose, initialize
 from omegaconf import OmegaConf
 from omegaconf.dictconfig import DictConfig
+from rich.logging import RichHandler
 from sklearn.metrics import classification_report
 from sklearn.model_selection import cross_val_score
 
@@ -33,6 +37,10 @@ def main(config: DictConfig, track_wandb: bool, wandb_project_name: str) -> None
         config: hydra config which includes hyper parameters for xgboost
         track_wandb: boolean to determine if Weights and Biases is used
     """
+    logging.config.fileConfig(Path(__file__).resolve().parent / "logging" / "logging.config")
+    logger = logging.getLogger(__name__)
+    logger.root.handlers[0] = RichHandler(markup=True)
+    
     print(f"conf = {OmegaConf.to_yaml(config)}")
     hydra_params = config.experiment
 
@@ -99,8 +107,11 @@ def model(
     print(f"Training: {train_accuracy}, Testing: {test_accuracy}\n")
     print(classification_report(y_test, base_model_preds, target_names=target_names))
 
+    logging.info(f"cv scores = {cv_scores}\ncv scores avg = {cv_scores.mean()}\nTraining: {model.score(X_train, y_train)}, Testing: {model.score(X_test, y_test)}")
+    
+    logging.info(classification_report(y_test, base_model_preds, target_names=target_names))
+    
     return ModelResponse(train_accuracy, test_accuracy)
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="CLI for xgboost model.")
