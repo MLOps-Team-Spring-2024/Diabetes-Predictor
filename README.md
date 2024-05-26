@@ -97,6 +97,10 @@ the tensorboard visualizer for the project. The traces for tensorboard are found
 As of now, the profiling is set up to run per model run, so to do multiple iterations of training of the model for each run, there will need to be some refactoring.
 For each model training, the PyTorch profiler must be stepped forward. Be sure to include `prof.step()` at the end of each iteration of the loop.
 
+### Application Logging
+We are using python's built in logging along wiht rich for formatting.
+We are currently loggin the model result. The log can be found inside the logging folder at the same level as the model.
+
 ## Project structure 
 <details>
 
@@ -135,6 +139,12 @@ The directory structure of the project looks like this:
 │   │
 │   ├── models                 <- Model implementations, training script and prediction script
 │   │   │
+│   │   ├── logging
+│   │   │   │
+│   │   │   ├── logging.config <- Logging configurations
+│   │   │   │
+│   │   │   └── logs           <- Contain .log files
+│   │   │
 │   │   ├── config             <- Folder container hydra config files
 │   │   │
 │   │   ├── xgboost_model.py   <- Entry point that runs our xgboost model
@@ -162,6 +172,7 @@ The python package dependencies are automatically managed by Poetry
 * ruff 0.4.2
 * mypy 1.10.0
 * wandb 0.17.0
+* rich 13.3.2
 
 ### Contributions
 Doc file containing detailed task and contribution
