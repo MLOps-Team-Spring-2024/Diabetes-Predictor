@@ -109,14 +109,8 @@ def model(
     model.fit(X_train, y_train)
     base_model_preds = model.predict(X_test)
 
-    print(f"cv scores = {cv_scores}")
-    print(f"cv scores avg = {cv_scores.mean()}")
-
     train_accuracy = model.score(X_train, y_train)
     test_accuracy = model.score(X_test, y_test)
-
-    print(f"Training: {train_accuracy}, Testing: {test_accuracy}\n")
-    print(classification_report(y_test, base_model_preds, target_names=target_names))
 
     logging.info(f"cv scores = {cv_scores}\ncv scores avg = {cv_scores.mean()}\nTraining: {model.score(X_train, y_train)}, Testing: {model.score(X_test, y_test)}")
     
