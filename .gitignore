@@ -178,11 +178,6 @@ cython_debug/
 
 # hydra directory
 outputs
-<<<<<<< 19-logging
-mlops_team_project/models/logging/logger_test.py
-mlops_team_project/models/logging/logger_with_config.py
-=======
 
 # wandb
 wandb
->>>>>>> main
