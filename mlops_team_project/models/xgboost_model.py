@@ -16,6 +16,7 @@ from omegaconf.dictconfig import DictConfig
 from rich.logging import RichHandler
 from sklearn.metrics import classification_report
 from sklearn.model_selection import cross_val_score
+from torch.profiler import ProfilerActivity, profile, record_function, tensorboard_trace_handler
 
 from mlops_team_project.src.preprocess import (
     min_max_scale_and_write,
@@ -53,30 +54,40 @@ def main(config: DictConfig, track_wandb: bool, wandb_project_name: str) -> None
     X_train_normalized, X_test_normalized = min_max_scale_and_write(
         X_train=X_train, X_test=X_test, write_path="data/processed"
     )
+    '''
+        NOTE: to profile over multiple runs, make sure to include prof.step() on each iteration
+        ex: when looping, on each iteration include prof.step()
+    '''
+    #begin profile block
+    with profile(activities=[ProfilerActivity.CPU],
+                 record_shapes=True,
+                 profile_memory=True,
+                 on_trace_ready=tensorboard_trace_handler("./profiling/model_run")
+                 ) as prof:
+                    model_response = model(
+                        X_train=X_train_normalized,
+                        X_test=X_test_normalized,
+                        y_train=y_train,
+                        y_test=y_test,
+                        hyperparameters=hydra_params,
+                    )
 
-    model_response = model(
-        X_train=X_train_normalized,
-        X_test=X_test_normalized,
-        y_train=y_train,
-        y_test=y_test,
-        hyperparameters=hydra_params,
-    )
-
-    if track_wandb:
-        wandb.init(project=wandb_project_name)
-        wandb_config = wandb.config
-        wandb_config.config = hydra_params
-        wandb.log({"Train accuracy": model_response.train_accuracy})
-        wandb.log({"Test accuracy": model_response.test_accuracy})
+                    if track_wandb:
+                        wandb.init(project=wandb_project_name)
+                        wandb_config = wandb.config
+                        wandb_config.config = hydra_params
+                        wandb.log({"Train accuracy": model_response.train_accuracy})
+                        wandb.log({"Test accuracy": model_response.test_accuracy})
+                    prof.step()
 
 
 def model(
-    X_train: np.ndarray,
-    X_test: np.ndarray,
-    y_train: np.ndarray,
-    y_test: np.ndarray,
-    hyperparameters: omegaconf.dictconfig.DictConfig,
-    target_names: List[str] = ["non-diabetic", "diabetic"],
+        X_train: np.ndarray,
+        X_test: np.ndarray,
+        y_train: np.ndarray,
+        y_test: np.ndarray,
+        hyperparameters: omegaconf.dictconfig.DictConfig,
+        target_names: List[str] = ["non-diabetic", "diabetic"],
 ) -> ModelResponse:
     """
     Runs the XGBoost model.

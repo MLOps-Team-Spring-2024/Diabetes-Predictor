@@ -18,6 +18,8 @@ ruff = "^0.4.2"
 mypy = "^1.10.0"
 rich = "^13.3.2"
 wandb = "^0.17.0"
+torch = "^2.3.0"
+snakeviz = "^2.2.0"
 
 [tool.ruff]
 line-length = 120
