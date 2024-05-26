@@ -1,10 +1,10 @@
 Henry deBuchananne:
 - Docker Containerization
-- 
+- Performance profiling
 
 Allan:
-- 
-- 
+- Application Logging
+- Monitoring and debugging
 
 Matt Soria:
 - Hydra coding and configuration
