@@ -1,6 +1,7 @@
 import argparse
 import logging
 import logging.config
+import os
 from dataclasses import dataclass
 from pathlib import Path
 from typing import List
@@ -10,7 +11,6 @@ import omegaconf
 import pandas as pd
 import wandb
 import xgboost as xgb
-import os
 from hydra import compose, initialize
 from omegaconf import OmegaConf
 from omegaconf.dictconfig import DictConfig
@@ -42,7 +42,7 @@ def main(config: DictConfig, track_wandb: bool, wandb_project_name: str) -> None
     logging.config.fileConfig(Path(__file__).resolve().parent / "logging" / "logging.config")
     logger = logging.getLogger(__name__)
     logger.root.handlers[0] = RichHandler(markup=True)
-    
+
     print(f"conf = {OmegaConf.to_yaml(config)}")
     hydra_params = config.experiment
 
@@ -59,30 +59,37 @@ def main(config: DictConfig, track_wandb: bool, wandb_project_name: str) -> None
         NOTE: to profile over multiple runs, make sure to include prof.step() on each iteration
         ex: when looping, on each iteration include prof.step()
     '''
+    prof_log: str = "./profiling/model_run"
+
+    curr_env = os.getenv("IN_CONTAINER", False)
+
+    if curr_env:
+        prof_log = os.getenv("PERF_DIR", prof_log)
+
     #begin profile block
     with profile(activities=[ProfilerActivity.CPU],
                  record_shapes=True,
                  profile_memory=True,
-                 on_trace_ready=tensorboard_trace_handler("./profiling/model_run")
+                 on_trace_ready=tensorboard_trace_handler(prof_log)
                  ) as prof:
-                    model_response = model(
-                        X_train=X_train_normalized,
-                        X_test=X_test_normalized,
-                        y_train=y_train,
-                        y_test=y_test,
-                        hyperparameters=hydra_params,
-                    )
+        model_response = model(
+            X_train=X_train_normalized,
+            X_test=X_test_normalized,
+            y_train=y_train,
+            y_test=y_test,
+            hyperparameters=hydra_params,
+        )
 
-                    if track_wandb:
-                        wandb_api_key = os.getenv("WANDB_API_KEY")
-                        if wandb_api_key:
-                            wandb.login(key=wandb_api_key)
-                        wandb.init(project=wandb_project_name)
-                        wandb_config = wandb.config
-                        wandb_config.config = hydra_params
-                        wandb.log({"Train accuracy": model_response.train_accuracy})
-                        wandb.log({"Test accuracy": model_response.test_accuracy})
-                    prof.step()
+        if track_wandb:
+            wandb_api_key = os.getenv("WANDB_API_KEY")
+            if wandb_api_key:
+                wandb.login(key=wandb_api_key)
+            wandb.init(project=wandb_project_name)
+            wandb_config = wandb.config
+            wandb_config.config = hydra_params
+            wandb.log({"Train accuracy": model_response.train_accuracy})
+            wandb.log({"Test accuracy": model_response.test_accuracy})
+        prof.step()
 
 
 def model(
@@ -122,11 +129,13 @@ def model(
     print(f"Training: {train_accuracy}, Testing: {test_accuracy}\n")
     print(classification_report(y_test, base_model_preds, target_names=target_names))
 
-    logging.info(f"cv scores = {cv_scores}\ncv scores avg = {cv_scores.mean()}\nTraining: {model.score(X_train, y_train)}, Testing: {model.score(X_test, y_test)}")
-    
+    logging.info(
+        f"cv scores = {cv_scores}\ncv scores avg = {cv_scores.mean()}\nTraining: {model.score(X_train, y_train)}, Testing: {model.score(X_test, y_test)}")
+
     logging.info(classification_report(y_test, base_model_preds, target_names=target_names))
-    
+
     return ModelResponse(train_accuracy, test_accuracy)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="CLI for xgboost model.")
@@ -153,5 +162,4 @@ if __name__ == "__main__":
 
     with initialize(version_base=None, config_path="config"):
         hydra_params = compose(overrides=[f"+experiment={args.hydra_experiment}"])
-
         main(hydra_params, args.wandb, args.wandb_project_name)

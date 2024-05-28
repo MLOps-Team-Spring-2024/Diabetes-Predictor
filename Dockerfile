@@ -7,12 +7,17 @@ RUN apt-get update && apt-get install -y make
 
 ENV PATH="${PATH}:/root/.poetry/bin"
 
+ENV IN_CONTAINER Yes
+
 #replace with actual key
-ENV WANDB_API_KEY = key
+ENV LOG_DIR=/app/logs
+ENV PERF_DIR=/app/performance
+
+RUN mkdir -p $LOG_DIR $PERF_DIR
 
 WORKDIR /app
 
-COPY . .
+COPY . /app
 #Install dependencies, except dev dependencies just in case
 RUN poetry install --no-dev
 

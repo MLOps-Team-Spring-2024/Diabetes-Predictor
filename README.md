@@ -98,8 +98,8 @@ As of now, the profiling is set up to run per model run, so to do multiple itera
 For each model training, the PyTorch profiler must be stepped forward. Be sure to include `prof.step()` at the end of each iteration of the loop.
 
 ### Application Logging
-We are using python's built in logging along wiht rich for formatting.
-We are currently loggin the model result. The log can be found inside the logging folder at the same level as the model.
+We are using python's built in logging along with rich for formatting.
+We are currently logging the model result. The log can be found inside the logging folder at the same level as the model.
 
 ## Project structure 
 <details>
