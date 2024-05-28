@@ -57,10 +57,3 @@ logging_config = {
 }
 
 dictConfig(config.logging_config)
-logger = logging.getLogger(__name__)
-
-logging.debug("Debug")
-logging.info("Information")
-logging.warning("Warning")
-logging.error("Error")
-logging.critical("Critical Error")
