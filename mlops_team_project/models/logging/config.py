@@ -1,6 +1,6 @@
 import logging
-import sys
 import os
+import sys
 from logging.config import dictConfig
 from pathlib import Path
 
