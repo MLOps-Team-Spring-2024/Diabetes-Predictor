@@ -120,6 +120,16 @@ def main(config: DictConfig, track_wandb: bool, wandb_project_name: str) -> None
     logger.root.handlers[0] = RichHandler(markup=True)
 ```
 
+Examples of the logging
+Console:
+![console](/images/console.png)
+
+Log Directory:
+![logdir](/images/logdir.png)
+
+Info.log:
+![infolog](/images/infolog.png)
+
 ## Docker Containerization
 
 This project is configured to run on docker. To get started, you just need to run the following two commands:
