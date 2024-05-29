@@ -101,6 +101,25 @@ For each model training, the PyTorch profiler must be stepped forward. Be sure t
 We are using python's built in logging along with rich for formatting.
 Info and Error logs can be found at `./logs/logs/`.
 
+The configuration for the logging can be found here:
+>[mlops_team_project/models/logging/logging.config](mlops_team_project/models/logging/logging.config)  
+
+The logs are then instatiated as so:
+
+```python3
+def main(config: DictConfig, track_wandb: bool, wandb_project_name: str) -> None:
+    """
+    Main function that runs the necessary steps for modeling
+
+    Args:
+        config: hydra config which includes hyper parameters for xgboost
+        track_wandb: boolean to determine if Weights and Biases is used
+    """
+    logging.config.fileConfig(Path(__file__).resolve().parent / "logging" / "logging.config")
+    logger = logging.getLogger(__name__)
+    logger.root.handlers[0] = RichHandler(markup=True)
+```
+
 ## Docker Containerization
 
 This project is configured to run on docker. To get started, you just need to run the following two commands:
