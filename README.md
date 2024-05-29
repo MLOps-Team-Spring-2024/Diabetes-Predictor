@@ -90,7 +90,7 @@ a visualization hosted on your locally.
 
 To profile our machine learning functions, we have implemented PyTorch to profile our function calls within the `xgboost_model.model()` function.
 The visualization of this is done using tensorboard. To run tensorboard, you just have to run `make tensorboard` and this will open
-the tensorboard visualizer for the project. The traces for tensorboard are found in `./profiling/model_run`.
+the tensorboard visualizer for the project. The traces for tensorboard are found in `./logs/profiling/model_run`.
 
 ![share](/images/tensorboard.PNG)
 
@@ -99,7 +99,54 @@ For each model training, the PyTorch profiler must be stepped forward. Be sure t
 
 ### Application Logging
 We are using python's built in logging along with rich for formatting.
-We are currently logging the model result. The log can be found inside the logging folder at the same level as the model.
+Info and Error logs can be found at `./logs/logs/`.
+
+## Docker Containerization
+
+This project is configured to run on docker. To get started, you just need to run the following two commands:
+
+```console
+docker build -t diabetes_predictor .
+
+docker run -it --rm diabetes_predictor
+```
+
+This will build, then run the docker container. The provided run command will run the project as-is, as if you ran it with `poetry run python mlops_team_project/models/xgboost_model.py`, which by default includes logging, monitoring logs, and profiling logs. If you would like to configure your run such that the logs are exported onto your local machine, you may run docker with the following command:
+
+```console
+docker run -it --rm 
+-v /desired/local/logs/directory:/app/logs/logs
+-v /desired/local/performance/directory:/app/logs/profiling
+diabetes_predictor
+```
+This command sets two volumes that get mapped to the app directories logs and performance within the docker container. Now, any file that gets placed in the `app/logs` or `app/performance` directories in docker, will then be copied over to the appropriate directory on your local machine.
+
+[!NOTE]
+The app directories MUST be `/app/logs/logs` and `app/logs/profiling` respectively, or the volumes will fail!
+
+This application also includes additional commands that can be run to activate other features such as Weights and Balances. In order to do this, you must add the flags for those commands as if you are running them locally. For example:
+
+```console
+    docker run -it --rm `
+    diabetes_predictor`
+    --hydra_experiment <experiment name>
+```
+
+If you want to run Weights and Balances from docker, you must also define an environment variable `WANDB_API_KEY` in your docker run command. This will allow you to pass in your personal Weights and Balances API key when you run the program
+
+```console
+    docker run -it --rm `
+    -e "WANDB_API_KEY=<your api key>" `
+    diabetes_predictor`
+    --hydra_experiment <experiment name>
+```
+
+## Common Debugging Gotcha's
+To debug this application, we generally recommend using an IDE with a built in debugger such as PyCharm, Visual Studio, or utilizing the python debugger within Visual Studio Code. It is important to start debugging at the entrypoint of the application in the `main()` function in `xgboost_model.py`. Utilizing these debugging tools, you can set specific variables of the model as a 'watch' item, so you can keep track of how that value changes before and after training. 
+
+[!NOTE]
+A common issue when running a docker image with desired external log outputs came from the directories in which the logs are placed both within the docker container and in the local machine. To troubleshoot this, we recommend to first, ensure the paths that have been established are correct. Walk through the code and keep an eye out for the `LOG_DIR, LOGS_DIR, and PERF_DIR` variables, and how the logging code is executed in the `xgboost_model.py` file. In addition, it is recommended to launch the docker image with `docker run -it /bin/bash <docker image name or ID>`, which will then allow you to `exec` and navigate the file structure. This will allow you to identify the proper directory path you must identify for your volume or other path issues you may have.
+
 
 ## Project structure 
 <details>
@@ -124,6 +171,13 @@ The directory structure of the project looks like this:
 │
 ├── .github                    <- Source directory for GitHub Actions and configurations
 │     └── workflows            <- SubDirectory for the specific actions
+│
+├──logs                        <- Directory for logging and profiling logs
+│  │
+│  ├──logs                     <- SubDirectory for python.logging output
+│  │
+│  └── profiling               <- SubDirectory for all profiling logs
+│       └── model_run          <- SubDirectory for tensorboard profiling logs
 │
 ├── models                     <- Trained and serialized models, model predictions, or model summaries
 │

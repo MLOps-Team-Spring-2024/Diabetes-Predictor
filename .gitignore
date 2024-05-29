@@ -182,5 +182,5 @@ outputs
 # wandb
 wandb
 
-#profiling
-/profiling/
+#profiling and logs
+/logs/

@@ -59,7 +59,7 @@ def main(config: DictConfig, track_wandb: bool, wandb_project_name: str) -> None
         NOTE: to profile over multiple runs, make sure to include prof.step() on each iteration
         ex: when looping, on each iteration include prof.step()
     '''
-    prof_log: str = "./profiling/model_run"
+    prof_log: str = "./logs/profiling/model_run"
 
     curr_env = os.getenv("IN_CONTAINER", False)
 

@@ -10,8 +10,8 @@ ENV PATH="${PATH}:/root/.poetry/bin"
 ENV IN_CONTAINER Yes
 
 #replace with actual key
-ENV LOG_DIR=/app/logs
-ENV PERF_DIR=/app/performance
+ENV LOG_DIR=/app/logs/logs/
+ENV PERF_DIR=/app/logs/profiling
 
 RUN mkdir -p $LOG_DIR $PERF_DIR
 
