@@ -15,7 +15,8 @@ LOGS_DIR.mkdir(parents=True, exist_ok=True)
 curr_env = os.getenv("IN_CONTAINER", False)
 
 if curr_env:
-    LOGS_DIR = os.getenv("LOG_DIR", LOGS_DIR)
+    log_env = os.getenv("LOG_DIR")
+    LOGS_DIR = Path(log_env)
 
 logging_config = {
     "version": 1,
