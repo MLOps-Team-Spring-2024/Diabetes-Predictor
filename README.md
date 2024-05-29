@@ -169,6 +169,16 @@ A common issue when running a docker image with desired external log outputs cam
 ## Monitoring
 We are monitoring our model with logging in python. Are script logs the Cross Validation scores for each model and the classification report. The classification report includes precision and recall.  
 
+```python3
+    logging.info(
+        f"cv scores = {cv_scores}\ncv scores avg = {cv_scores.mean()}\nTraining: {model.score(X_train, y_train)}, Testing: {model.score(X_test, y_test)}"
+    )
+
+    logging.info(
+        classification_report(y_test, base_model_preds, target_names=target_names)
+    )
+```
+
 These are the core metrics we want to observe in our model and they are printed to the console for the user as well as persisted to our log file.
 
 ## Project structure 
