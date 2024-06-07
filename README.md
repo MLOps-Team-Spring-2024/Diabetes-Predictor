@@ -101,6 +101,35 @@ For each model training, the PyTorch profiler must be stepped forward. Be sure t
 We are using python's built in logging along with rich for formatting.
 Info and Error logs can be found at `./logs/logs/`.
 
+The configuration for the logging can be found here:
+>[mlops_team_project/models/logging/logging.config](mlops_team_project/models/logging/logging.config)  
+
+The logs are then instatiated as so:
+
+```python3
+def main(config: DictConfig, track_wandb: bool, wandb_project_name: str) -> None:
+    """
+    Main function that runs the necessary steps for modeling
+
+    Args:
+        config: hydra config which includes hyper parameters for xgboost
+        track_wandb: boolean to determine if Weights and Biases is used
+    """
+    logging.config.fileConfig(Path(__file__).resolve().parent / "logging" / "logging.config")
+    logger = logging.getLogger(__name__)
+    logger.root.handlers[0] = RichHandler(markup=True)
+```
+
+Examples of the logging  
+Console:  
+![console](/images/console.png)  
+
+Log Directory:  
+![logdir](/images/logdir.png)  
+
+Info.log:  
+![infolog](/images/infolog.png)  
+
 ## Docker Containerization
 
 This project is configured to run on docker. To get started, you just need to run the following two commands:
@@ -147,6 +176,20 @@ To debug this application, we generally recommend using an IDE with a built in d
 [!NOTE]
 A common issue when running a docker image with desired external log outputs came from the directories in which the logs are placed both within the docker container and in the local machine. To troubleshoot this, we recommend to first, ensure the paths that have been established are correct. Walk through the code and keep an eye out for the `LOG_DIR, LOGS_DIR, and PERF_DIR` variables, and how the logging code is executed in the `xgboost_model.py` file. In addition, it is recommended to launch the docker image with `docker run -it /bin/bash <docker image name or ID>`, which will then allow you to `exec` and navigate the file structure. This will allow you to identify the proper directory path you must identify for your volume or other path issues you may have.
 
+## Monitoring
+We are monitoring our model with logging in python. Are script logs the Cross Validation scores for each model and the classification report. The classification report includes precision and recall.  
+
+```python3
+    logging.info(
+        f"cv scores = {cv_scores}\ncv scores avg = {cv_scores.mean()}\nTraining: {model.score(X_train, y_train)}, Testing: {model.score(X_test, y_test)}"
+    )
+
+    logging.info(
+        classification_report(y_test, base_model_preds, target_names=target_names)
+    )
+```
+
+These are the core metrics we want to observe in our model and they are printed to the console for the user as well as persisted to our log file.
 
 ## Project structure 
 <details>
@@ -218,15 +261,17 @@ The directory structure of the project looks like this:
 - Poetry
 
 The python package dependencies are automatically managed by Poetry
-* jupyterlab 4.1.8
-* pandas 2.2.2
-* scikit-learn 1.4.2
-* xgboost 2.0.3
-* hydra-core 1.3.2
-* ruff 0.4.2
-* mypy 1.10.0
-* wandb 0.17.0
-* rich 13.3.2
+* jupyterlab = "^4.1.8"
+* pandas = "^2.2.2"
+* scikit-learn = "^1.4.2"
+* xgboost = "^2.0.3"
+* hydra-core = "^1.3.2"
+* ruff = "^0.4.2"
+* mypy = "^1.10.0"
+* rich = "^13.3.2"
+* wandb = "^0.17.0"
+* torch = "^2.3.0"
+* snakeviz = "^2.2.0"
 
 ### Contributions
 Doc file containing detailed task and contribution

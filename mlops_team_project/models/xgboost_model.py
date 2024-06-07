@@ -17,7 +17,12 @@ from omegaconf.dictconfig import DictConfig
 from rich.logging import RichHandler
 from sklearn.metrics import classification_report
 from sklearn.model_selection import cross_val_score
-from torch.profiler import ProfilerActivity, profile, record_function, tensorboard_trace_handler
+from torch.profiler import (
+    ProfilerActivity,
+    profile,
+    record_function,
+    tensorboard_trace_handler,
+)
 
 from mlops_team_project.src.preprocess import (
     min_max_scale_and_write,
@@ -39,11 +44,13 @@ def main(config: DictConfig, track_wandb: bool, wandb_project_name: str) -> None
         config: hydra config which includes hyper parameters for xgboost
         track_wandb: boolean to determine if Weights and Biases is used
     """
-    logging.config.fileConfig(Path(__file__).resolve().parent / "logging" / "logging.config")
+    logging.config.fileConfig(
+        Path(__file__).resolve().parent / "logging" / "logging.config"
+    )
     logger = logging.getLogger(__name__)
     logger.root.handlers[0] = RichHandler(markup=True)
 
-    print(f"conf = {OmegaConf.to_yaml(config)}")
+    logger.info(f"conf = {OmegaConf.to_yaml(config)}")
     hydra_params = config.experiment
 
     df = pd.read_csv("data/raw/diabetes_data.csv")
@@ -55,10 +62,10 @@ def main(config: DictConfig, track_wandb: bool, wandb_project_name: str) -> None
     X_train_normalized, X_test_normalized = min_max_scale_and_write(
         X_train=X_train, X_test=X_test, write_path="data/processed"
     )
-    '''
+    """
         NOTE: to profile over multiple runs, make sure to include prof.step() on each iteration
         ex: when looping, on each iteration include prof.step()
-    '''
+    """
     prof_log: str = "./logs/profiling/model_run"
 
     curr_env = os.getenv("IN_CONTAINER", False)
@@ -66,12 +73,13 @@ def main(config: DictConfig, track_wandb: bool, wandb_project_name: str) -> None
     if curr_env:
         prof_log = os.getenv("PERF_DIR", prof_log)
 
-    #begin profile block
-    with profile(activities=[ProfilerActivity.CPU],
-                 record_shapes=True,
-                 profile_memory=True,
-                 on_trace_ready=tensorboard_trace_handler(prof_log)
-                 ) as prof:
+    # begin profile block
+    with profile(
+        activities=[ProfilerActivity.CPU],
+        record_shapes=True,
+        profile_memory=True,
+        on_trace_ready=tensorboard_trace_handler(prof_log),
+    ) as prof:
         model_response = model(
             X_train=X_train_normalized,
             X_test=X_test_normalized,
@@ -93,12 +101,12 @@ def main(config: DictConfig, track_wandb: bool, wandb_project_name: str) -> None
 
 
 def model(
-        X_train: np.ndarray,
-        X_test: np.ndarray,
-        y_train: np.ndarray,
-        y_test: np.ndarray,
-        hyperparameters: omegaconf.dictconfig.DictConfig,
-        target_names: List[str] = ["non-diabetic", "diabetic"],
+    X_train: np.ndarray,
+    X_test: np.ndarray,
+    y_train: np.ndarray,
+    y_test: np.ndarray,
+    hyperparameters: omegaconf.dictconfig.DictConfig,
+    target_names: List[str] = ["non-diabetic", "diabetic"],
 ) -> ModelResponse:
     """
     Runs the XGBoost model.
@@ -123,9 +131,13 @@ def model(
     train_accuracy = model.score(X_train, y_train)
     test_accuracy = model.score(X_test, y_test)
 
-    logging.info(f"cv scores = {cv_scores}\ncv scores avg = {cv_scores.mean()}\nTraining: {model.score(X_train, y_train)}, Testing: {model.score(X_test, y_test)}")
-    
-    logging.info(classification_report(y_test, base_model_preds, target_names=target_names))
+    logging.info(
+        f"cv scores = {cv_scores}\ncv scores avg = {cv_scores.mean()}\nTraining: {model.score(X_train, y_train)}, Testing: {model.score(X_test, y_test)}"
+    )
+
+    logging.info(
+        classification_report(y_test, base_model_preds, target_names=target_names)
+    )
 
     return ModelResponse(train_accuracy, test_accuracy)
 
