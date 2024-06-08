@@ -8,7 +8,7 @@ def test_accuracy():
     assert model.pytest_train_accuray == model.pytest_test_accuracy
 
 def test_x_training():
-    assert model.pytest_x_train == model.pytest_y_test
+    assert model.pytest_X_train == model.pytest_X_test
 
 def test_y_training():
     assert model.pytest_y_train == model.pytest_y_test
