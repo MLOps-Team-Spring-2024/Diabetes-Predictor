@@ -2,9 +2,9 @@ import argparse
 import logging
 import logging.config
 import os
+import pickle
 from dataclasses import dataclass
 from pathlib import Path
-import pickle
 from typing import List
 
 import numpy as np
