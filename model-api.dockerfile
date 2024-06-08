@@ -22,6 +22,4 @@ COPY . /app
 #Install dependencies, except dev dependencies just in case
 RUN poetry install --no-dev
 
-# ENTRYPOINT ["poetry", "run", "python", "mlops_team_project/models/xgboost_model.py"]
-
 CMD ["poetry", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80"]
