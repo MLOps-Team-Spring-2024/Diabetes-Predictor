@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import List
 
 import numpy as np
+import matplotlib.pyplot as plt
 import omegaconf
 import pandas as pd
 import wandb
@@ -16,7 +17,7 @@ from hydra import compose, initialize
 from omegaconf import OmegaConf
 from omegaconf.dictconfig import DictConfig
 from rich.logging import RichHandler
-from sklearn.metrics import classification_report
+from sklearn.metrics import classification_report, confusion_matrix, ConfusionMatrixDisplay
 from sklearn.model_selection import cross_val_score
 from torch.profiler import (
     ProfilerActivity,
@@ -139,6 +140,18 @@ def model(
     )
 
     logging.info(classification_report(y_test, preds, target_names=target_names))
+
+    report = classification_report(y_test, preds, target_names=target_names)
+    with open("classification_report.txt", 'w') as outfile:
+        outfile.write(report)
+
+    confmat = confusion_matrix(y_test, preds, target_names= target_names)
+    display = ConfusionMatrixDisplay(confusion_matrix= confmat)
+
+    fig, ax= plt.subplots(figsize=(10, 8)) #may want to update the size
+    display.plot(ax=ax)
+
+    plt.savefig('confusion_matrix.png')
 
     with open("models/xgboost_model.pkl", "wb") as file:
         pickle.dump(model, file)

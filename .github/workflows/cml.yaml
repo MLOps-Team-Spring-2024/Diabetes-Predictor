@@ -1,0 +1,21 @@
+name: train model cml
+on: [push]
+jobs:
+  run:
+    runs-on: [ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: iterative/setup-cml@v1
+      - name: Train model
+        run: |
+          pip install poetry
+          poetry install
+          poetry run python mlops_team_project/models/xgboost_model.py
+
+      - name: Write Report
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }} #might need to change
+        run: |
+          cat classification_report.txt >> report.md
+          cml-publish confusion-matrix.png --md >> report.md
+          cml-send-comment report.md
