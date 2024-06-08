@@ -1,11 +1,9 @@
 import pytest
 import torch
-from torchvision.datasets import MNIST
 from torchvision import transforms
-from tests import _TEST_ROOT
-from tests import _PROJECT_ROOT
-from tests import _PATH_DATA
+from torchvision.datasets import MNIST
 
+from tests import _PATH_DATA, _PROJECT_ROOT, _TEST_ROOT
 
 dataset_path = _PATH_DATA+"/processed"
 
