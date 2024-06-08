@@ -5,6 +5,7 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     id: 'build-model-api'
     args: ['build', '-t', 'us-central1-docker.pkg.dev/mlops489-425700/mlops489-project/model-api:latest', '.', '-f', 'model-api.dockerfile']
+    waitFor: ['-']
   - name: 'gcr.io/cloud-builders/docker'
     id: 'push-model-train'
     waitFor: ['build-model-train']
