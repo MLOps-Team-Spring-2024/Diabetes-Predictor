@@ -278,7 +278,7 @@ Doc file containing detailed task and contribution
 [Part 2](/docs/project_2_tasks.txt)
 
 ## Part 3 Need to clean up
-### FastApi
+### FastApi s
 
 ```
 docker run -p 80:80 your-image-name
