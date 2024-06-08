@@ -17,10 +17,11 @@ jobs:
 
       - name: Install Poetry
         run: pip install poetry
+
       - name: get poetry dependencies
         run: |
-          poetry config pypi-token.pypi ${{ secrets.AUTO_REQUEST_PR }}
           poetry install
+
       - name: Install DVC and Google Cloud SDK
         run: |
           poetry add dvc
@@ -29,13 +30,15 @@ jobs:
           curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
           echo "deb http://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
           sudo apt-get update && sudo apt-get install -y google-cloud-sdk
+
       - name: Authenticate to GCP
         env:
           GCP_SERVICE_ACC_KEY: ${{secrets.GCP_ACC}}
         run: |
-          echo "$GCP_SERVICE_ACC_KEY" > ${HOME}/gclouud-service-key.json
+          echo "$GCP_SERVICE_ACC_KEY" > ${HOME}/gcloud-service-key.json
           gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
           gcloud config set project mlops489-425700
+
 #check with alizadeh about this action
       - name: Push tracked data
         run: |
