@@ -1,0 +1,5 @@
+steps:
+    - name: 'gcr.io/cloud-builders/docker'
+        args: ['build', '-t', 'us-central1-docker.pkg.dev/mlops489-425700/mlops489-project/matt-test:latest', '.']
+    - name: 'gcr.io/cloud-builders/docker'
+        args: ['push', 'us-central1-docker.pkg.dev/mlops489-425700/mlops489-project/matt-test:latest']
