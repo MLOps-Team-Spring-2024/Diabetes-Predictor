@@ -2,6 +2,7 @@ import argparse
 import logging
 import logging.config
 import os
+import pickle
 from dataclasses import dataclass
 from pathlib import Path
 from typing import List
@@ -125,8 +126,10 @@ def model(
 
     cv_scores = cross_val_score(model, X_train, y_train, cv=5)
 
+    print(X_train.shape)
+
     model.fit(X_train, y_train)
-    base_model_preds = model.predict(X_test)
+    preds = model.predict(X_test)
 
     train_accuracy = model.score(X_train, y_train)
     test_accuracy = model.score(X_test, y_test)
@@ -135,9 +138,10 @@ def model(
         f"cv scores = {cv_scores}\ncv scores avg = {cv_scores.mean()}\nTraining: {model.score(X_train, y_train)}, Testing: {model.score(X_test, y_test)}"
     )
 
-    logging.info(
-        classification_report(y_test, base_model_preds, target_names=target_names)
-    )
+    logging.info(classification_report(y_test, preds, target_names=target_names))
+
+    with open("models/xgboost_model.pkl", "wb") as file:
+        pickle.dump(model, file)
 
     return ModelResponse(train_accuracy, test_accuracy)
 
