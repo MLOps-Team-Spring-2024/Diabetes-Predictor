@@ -30,6 +30,14 @@ from mlops_team_project.src.preprocess import (
     train_test_split_and_write,
 )
 
+pytest_train_accuray = None
+pytest_test_accuracy = None
+pytest_x_train = None
+pytest_y_train = None
+pytest_x_test = None
+pytest_y_test = None
+pytest_preds = None
+
 
 @dataclass
 class ModelResponse:
@@ -134,6 +142,15 @@ def model(
     train_accuracy = model.score(X_train, y_train)
     test_accuracy = model.score(X_test, y_test)
 
+    pytest_train_accuracy = train_accuracy
+    pytest_test_accuracy = test_accuracy
+    pytest_x_train = X_train
+    pytest_y_train = y_train
+    pytest_x_test = x_test
+    pytest_y_test = y_test
+    pytest_preds = preds
+
+    
     logging.info(
         f"cv scores = {cv_scores}\ncv scores avg = {cv_scores.mean()}\nTraining: {model.score(X_train, y_train)}, Testing: {model.score(X_test, y_test)}"
     )
