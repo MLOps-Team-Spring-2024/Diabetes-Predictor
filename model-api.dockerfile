@@ -22,4 +22,6 @@ COPY . /app
 #Install dependencies, except dev dependencies just in case
 RUN poetry install --no-dev
 
-CMD ["poetry", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80"]
+EXPOSE 8080
+
+CMD ["poetry", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]
