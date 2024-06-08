@@ -1,6 +1,8 @@
-import torch
-import pytest
 import os
+
+import pytest
+import torch
+
 from mlops_team_project.models import xgboost_model as model
 
 
