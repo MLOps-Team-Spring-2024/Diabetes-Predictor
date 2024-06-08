@@ -276,3 +276,16 @@ The python package dependencies are automatically managed by Poetry
 ### Contributions
 Doc file containing detailed task and contribution
 [Part 2](/docs/project_2_tasks.txt)
+
+## Part 3 Need to clean up
+### FastApi
+
+```
+docker run -p 80:80 your-image-name
+```
+
+```
+curl -X POST "http://127.0.0.1:80/predict/" -H "Content-Type: application/json" -d '{
+    "data": "{\"age\": 6, \"sex\": 1, \"high_chol\": 1, \"chol_check\": 1, \"bmi\": 41.0, \"smoker\": 1, \"heart_disease\": 0, \"phys_activity\": 1, \"fruits\": 0, \"veggies\": 0, \"hvy_alcohol_consump\": 0, \"gen_hlth\": 4, \"ment_hlth\": 30, \"phys_hlth\": 15, \"diff_walk\": 1, \"stroke\": 0, \"high_bp\": 1}"
+}'
+```
