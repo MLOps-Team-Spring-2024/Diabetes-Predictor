@@ -1,7 +1,7 @@
 import argparse
+import io
 import logging
 import logging.config
-import io
 import os
 import pickle
 from dataclasses import dataclass
@@ -13,6 +13,7 @@ import omegaconf
 import pandas as pd
 import wandb
 import xgboost as xgb
+from google.cloud import storage
 from hydra import compose, initialize
 from omegaconf import OmegaConf
 from omegaconf.dictconfig import DictConfig
@@ -24,7 +25,6 @@ from torch.profiler import (
     profile,
     tensorboard_trace_handler,
 )
-from google.cloud import storage
 
 from mlops_team_project.src.preprocess import (
     min_max_scale_and_write,
