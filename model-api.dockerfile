@@ -16,6 +16,7 @@ RUN pip install xgboost
 
 COPY app .
 COPY models models
+COPY mlops_team_project mlops_team_project
 
 EXPOSE $PORT
 
