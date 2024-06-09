@@ -1,4 +1,4 @@
-FROM python:3.11-slim
+FROM python:3.9-slim
 
 WORKDIR /app
 
@@ -11,12 +11,9 @@ RUN apt-get update && apt-get install -y \
 RUN pip install fastapi
 RUN pip install pydantic
 RUN pip install uvicorn
-RUN pip install numpy
-RUN pip install xgboost
 
-COPY app .
-COPY models models
+COPY basic_fastapi.py basic_fastapi.py
 
 EXPOSE $PORT
 
-CMD exec uvicorn main:app --port $PORT --host 0.0.0.0 --workers 1
+CMD exec uvicorn basic_fastapi:app --port $PORT --host 0.0.0.0 --workers 1
