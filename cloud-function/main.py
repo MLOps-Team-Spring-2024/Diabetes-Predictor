@@ -1,12 +1,12 @@
-from typing import Dict
 import json
 import pickle
+from typing import Dict
 
 import functions_framework
-from google.cloud import storage
 import numpy as np
-from pydantic import BaseModel
 import xgboost
+from google.cloud import storage
+from pydantic import BaseModel
 
 
 @functions_framework.http
