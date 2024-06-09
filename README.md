@@ -279,14 +279,24 @@ Doc file containing detailed task and contribution
 [Part 2](/docs/project_2_tasks.txt)
 
 ## Part 3 Need to clean up
-### FastApi 
+### FastApi
+#### Running Locally
 
 ```
-docker run -p 80:80 your-image-name
+docker build --platform linux/amd64 -t gcr.io/mlops489-425700/model-api:latest . -f model-api.dockerfile
 ```
 
 ```
-curl -X POST "http://127.0.0.1:80/predict/" -H "Content-Type: application/json" -d '{
+docker run \
+-p 8080:8080 \
+-e PORT=8080 \
+-v ~/.config/gcloud/application_default_credentials.json:/app/application_default_credentials.json \
+-e GOOGLE_APPLICATION_CREDENTIALS="/app/application_default_credentials.json" \
+gcr.io/mlops489-425700/model-api
+```
+
+```
+curl -X POST "http://127.0.0.1:8080/predict/" -H "Content-Type: application/json" -d '{
     "data": "{\"age\": 6, \"sex\": 1, \"high_chol\": 1, \"chol_check\": 1, \"bmi\": 41.0, \"smoker\": 1, \"heart_disease\": 0, \"phys_activity\": 1, \"fruits\": 0, \"veggies\": 0, \"hvy_alcohol_consump\": 0, \"gen_hlth\": 4, \"ment_hlth\": 30, \"phys_hlth\": 15, \"diff_walk\": 1, \"stroke\": 0, \"high_bp\": 1}"
 }'
 ```
