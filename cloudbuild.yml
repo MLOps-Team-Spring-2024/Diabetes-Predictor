@@ -6,6 +6,25 @@ steps:
     id: 'build-model-api'
     args: ['build', '-t', 'gcr.io/mlops489-425700/model-api:latest', '.', '-f', 'model-api.dockerfile']
     waitFor: ['-']
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: 'deploy api to cloud function'
+    waitFor: ['-']
+    entrypoint: gcloud
+    args:
+    - 'functions'
+    - 'deploy'
+    - 'model-api-function'
+    - '--runtime'
+    - 'python311'
+    - '--region'
+    - 'us-central1'
+    - '--gen2'
+    - '--trigger-http'
+    - '--allow-unauthenticated'
+    - '--entry-point'
+    - 'hello_http'
+    - '--source'
+    - 'cloud-function'
   - name: 'gcr.io/cloud-builders/docker'
     id: 'push-model-train'
     waitFor: ['build-model-train']
