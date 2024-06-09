@@ -1,14 +1,13 @@
-import pytest
-import pandas as pd
 from dataclasses import dataclass
-from tests import _TEST_ROOT
-from tests import _PROJECT_ROOT
-from tests import _PATH_DATA
+
+import pandas as pd
+import pytest
+
 from mlops_team_project.src.preprocess import (
     min_max_scale_and_write,
     train_test_split_and_write,
 )
-
+from tests import _PATH_DATA, _PROJECT_ROOT, _TEST_ROOT
 
 dataset_path = _PATH_DATA+"/processed"
 df = pd.read_csv(_PATH_DATA+"/raw/diabetes_data.csv")
