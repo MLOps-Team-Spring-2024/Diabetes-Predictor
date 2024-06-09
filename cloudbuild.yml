@@ -1,22 +1,22 @@
 steps:
-  # - name: 'gcr.io/cloud-builders/docker'
-  #   id: 'build-model-train'
-  #   args: ['build', '-t', 'gcr.io/mlops489-425700/model-train:latest', '.', '-f', 'model-train.dockerfile']
-  # - name: 'gcr.io/cloud-builders/docker'
-  #   id: 'build-model-api'
-  #   args: ['build', '-t', 'gcr.io/mlops489-425700/model-api:latest', '.', '-f', 'model-api.dockerfile']
-  #   waitFor: ['-']
-  # - name: 'gcr.io/cloud-builders/docker'
-  #   id: 'push-model-train'
-  #   waitFor: ['build-model-train']
-  #   args: ['push', 'gcr.io/mlops489-425700/model-train:latest']
-  # - name: 'gcr.io/cloud-builders/docker'
-  #   id: 'push-model-api'
-  #   waitFor: ['build-model-api']
-  #   args: ['push', 'gcr.io/mlops489-425700/model-api:latest']
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'build-model-train'
+    args: ['build', '-t', 'gcr.io/mlops489-425700/model-train:latest', '.', '-f', 'model-train.dockerfile']
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'build-model-api'
+    args: ['build', '-t', 'gcr.io/mlops489-425700/model-api:latest', '.', '-f', 'model-api.dockerfile']
+    waitFor: ['-']
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'push-model-train'
+    waitFor: ['build-model-train']
+    args: ['push', 'gcr.io/mlops489-425700/model-train:latest']
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'push-model-api'
+    waitFor: ['build-model-api']
+    args: ['push', 'gcr.io/mlops489-425700/model-api:latest']
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     id: 'deploy api to cloud run'
-    # waitFor: ['push-model-api']
+    waitFor: ['push-model-api']
     entrypoint: gcloud
     args:
     - 'run'
