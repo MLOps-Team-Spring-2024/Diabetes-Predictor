@@ -1,0 +1,43 @@
+name: Pull DVC Data
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  GCP_CRED: ${{ secrets.GCP_ACC }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: confirm python setup
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - uses: iterative/setup-dvc@v1
+
+      - name: set up GCP DVC
+        run: pip install dvc-gs
+
+      - name: Get data
+        run: |
+            echo "${GCP_CRED}" > gcloud-key.json
+            gcloud auth activate-service-account --key-file=gcloud-key.json
+            gcloud config set project mlops489-425700
+
+      - name: Config GCP remote
+        run: |
+          dvc remote add -d remote_storage gs://mlops489-project
+          dvc remote modify remote_storage version_aware true
+
+      - name: pull data into repository
+        run: dvc pull
+         
+      

@@ -1,53 +1,6 @@
 outs:
-- hash: md5
+- md5: 514ee0c1fe283cd5cc3f7245e33e2c10.dir
+  size: 18158430
+  nfiles: 7
+  hash: md5
   path: data
-  files:
-  - relpath: processed/test_data.csv
-    md5: 64e3d5ae5e82da3f396560104cb9d22d
-    size: 1001032
-    cloud:
-      remote_storage:
-        etag: 08a6a1d78591cb86031001
-        version_id: '1717819695026342'
-  - relpath: processed/test_data_normalized.csv
-    md5: 21ef0325188ae1003c9862524515d965
-    size: 1502298
-    cloud:
-      remote_storage:
-        etag: 08efd8ed8591cb86031001
-        version_id: '1717819695393903'
-  - relpath: processed/test_labels.csv
-    md5: 295c69d100ca0389113f6ee1156bb904
-    size: 70705
-    cloud:
-      remote_storage:
-        etag: 0897e6c18591cb86031001
-        version_id: '1717819694674711'
-  - relpath: processed/train_data.csv
-    md5: 4936a2e3b513e880d711e15c191325b5
-    size: 4003487
-    cloud:
-      remote_storage:
-        etag: 08f8d6ca8591cb86031001
-        version_id: '1717819694820216'
-  - relpath: processed/train_data_normalized.csv
-    md5: e94950e592ec030a30b5ec97761666b8
-    size: 6010992
-    cloud:
-      remote_storage:
-        etag: 08e988888691cb86031001
-        version_id: '1717819695826025'
-  - relpath: processed/train_labels.csv
-    md5: 2b2244f4b82b135e3e966bc5d575d1af
-    size: 282775
-    cloud:
-      remote_storage:
-        etag: 0880fea48591cb86031001
-        version_id: '1717819694202624'
-  - relpath: raw/diabetes_data.csv
-    md5: fc79213e4a9f2a730b4a135378a8ff7a
-    size: 5287141
-    cloud:
-      remote_storage:
-        etag: 08e3ae928691cb86031001
-        version_id: '1717819695994723'
