@@ -1,8 +1,8 @@
 from typing import Dict
 
 import numpy as np
-from pydantic import BaseModel
 import xgboost
+from pydantic import BaseModel
 
 
 class PredictionData(BaseModel):
