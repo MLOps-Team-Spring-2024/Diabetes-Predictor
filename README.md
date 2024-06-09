@@ -272,6 +272,7 @@ The python package dependencies are automatically managed by Poetry
 * wandb = "^0.17.0"
 * torch = "^2.3.0"
 * snakeviz = "^2.2.0"
+* pytest = "^7.0"
 
 ### Contributions
 Doc file containing detailed task and contribution
@@ -300,6 +301,7 @@ curl -X POST "http://127.0.0.1:8080/predict/" -H "Content-Type: application/json
 }'
 ```
 
+
 ### Training
 #### Running Locally
 
@@ -313,3 +315,6 @@ docker run \
 -e GOOGLE_APPLICATION_CREDENTIALS="/app/application_default_credentials.json" \
 gcr.io/mlops489-425700/model-train
 ```
+
+## Unit Testing
+![unittesting](/images/UnitTest.png) 
