@@ -16,7 +16,7 @@ steps:
   #   args: ['push', 'gcr.io/mlops489-425700/model-api:latest']
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     id: 'deploy api to cloud run'
-    waitFor: ['push-model-api']
+    # waitFor: ['push-model-api']
     entrypoint: gcloud
     args:
     - 'run'
