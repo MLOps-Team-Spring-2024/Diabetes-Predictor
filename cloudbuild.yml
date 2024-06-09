@@ -26,5 +26,9 @@ steps:
     - 'gcr.io/mlops489-425700/model-api:latest'
     - '--region'
     - 'us-central1'
+    - '--platform'
+    - 'managed'
+    - '--allow-unauthenticated'
+
 
 
