@@ -1,36 +1,34 @@
 import pytest
-import torch
-from torchvision import transforms
-from torchvision.datasets import MNIST
+import pandas as pd
+from dataclasses import dataclass
+from tests import _TEST_ROOT
+from tests import _PROJECT_ROOT
+from tests import _PATH_DATA
+from mlops_team_project.src.preprocess import (
+    min_max_scale_and_write,
+    train_test_split_and_write,
+)
 
-from tests import _PATH_DATA, _PROJECT_ROOT, _TEST_ROOT
 
 dataset_path = _PATH_DATA+"/processed"
+df = pd.read_csv(_PATH_DATA+"/raw/diabetes_data.csv")
 
-
-N_train = 60000
-N_test = 10000
-
-mist_transform = transforms.Compose([transforms.ToTensor()])
-
-@pytest.fixture
-def train_dataset():
-    return MNIST(dataset_path, transform=mist_transform, train=True, download=True)
+train_row = 56553
+train_col = 17
+test_row = 14139
+test_col = 17
+y_len = 56553
 
 @pytest.fixture
-def test_dataset():
-    return MNIST(dataset_path, transform=mist_transform, train=False, download=True)
+def process_dataset():
+    try:
+        X_train, X_test, y_train, y_test = train_test_split_and_write(
+            df=df, write_path="data/processed"
+        )
+        return [X_train.shape[0], X_train.shape[1], X_test.shape[0], X_test.shape[1], len(y_train)]
+    except TypeError:
+        print("Cannot Unpack Non-iterable !")
 
-
-def test_train_dataset_length(train_dataset):
-    assert len(train_dataset) == N_train
-
-def test_test_dataset_length(test_dataset):
-    assert len(test_dataset) == N_test
-
-def test_label_representation(train_dataset, test_dataset):
-    labels = set()
-    for dataset in [train_dataset, test_dataset]:
-        for _, label in dataset:
-            labels.add(label)
-    assert len(labels) == 10
+def test_traintest_dataset(process_dataset):
+    count = process_dataset
+    assert count == [train_row, train_col, test_row, test_col, y_len]
