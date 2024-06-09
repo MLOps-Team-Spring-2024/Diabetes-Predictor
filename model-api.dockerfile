@@ -1,25 +1,24 @@
-FROM python:3.11
-LABEL authors="henry"
-
-RUN pip install poetry
-
-RUN apt-get update && apt-get install -y make
-
-ENV PATH="${PATH}:/root/.poetry/bin"
-
-ENV IN_CONTAINER Yes
-
-#replace with actual key
-ENV LOG_DIR=/app/logs/logs/
-ENV PERF_DIR=/app/logs/profiling
-
-RUN mkdir -p $LOG_DIR $PERF_DIR
+FROM python:3.11-slim
 
 WORKDIR /app
 
-COPY . /app
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    software-properties-common \
+    git \
+    && rm -rf /var/lib/apt/lists/*
 
-#Install dependencies, except dev dependencies just in case
-RUN poetry install --no-dev
+RUN pip install fastapi
+RUN pip install pydantic
+RUN pip install uvicorn
+RUN pip install numpy
+RUN pip install xgboost
+RUN pip install google-cloud-storage
 
-CMD ["poetry", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80"]
+COPY app .
+COPY models models
+COPY mlops_team_project mlops_team_project
+
+EXPOSE $PORT
+
+CMD exec uvicorn main:app --port $PORT --host 0.0.0.0 --workers 1
