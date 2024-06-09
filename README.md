@@ -282,7 +282,16 @@ Doc file containing detailed task and contribution
 #### Running Locally
 
 ```
-docker run -p 8080:8080 -e PORT=8080 your-image-name
+docker build --platform linux/amd64 -t gcr.io/mlops489-425700/model-api:latest . -f model-api.dockerfile
+```
+
+```
+docker run \
+-p 8080:8080 \
+-e PORT=8080 \
+-v ~/.config/gcloud/application_default_credentials.json:/app/application_default_credentials.json \
+-e GOOGLE_APPLICATION_CREDENTIALS="/app/application_default_credentials.json" \
+gcr.io/mlops489-425700/model-api
 ```
 
 ```

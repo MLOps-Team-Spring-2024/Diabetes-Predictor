@@ -4,14 +4,17 @@ from http import HTTPStatus
 
 import numpy as np
 from fastapi import FastAPI
+from google.cloud import storage
 from pydantic import BaseModel
 
 from mlops_team_project.src.predict import predict
 
 app = FastAPI()
 
-with open("models/xgboost_model.pkl", "rb") as file:
-    model = pickle.load(file)
+client = storage.Client("mlops489-425700")
+bucket = client.get_bucket("mlops489-project")
+blob = bucket.get_blob("models/xgboost_model.pkl")
+model = pickle.loads(blob.download_as_string())
 
 
 class PredictRequest(BaseModel):

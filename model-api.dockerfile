@@ -13,6 +13,7 @@ RUN pip install pydantic
 RUN pip install uvicorn
 RUN pip install numpy
 RUN pip install xgboost
+RUN pip install google-cloud-storage
 
 COPY app .
 COPY models models
