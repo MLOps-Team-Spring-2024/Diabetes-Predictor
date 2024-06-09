@@ -32,11 +32,6 @@ jobs:
             gcloud auth activate-service-account --key-file=gcloud-key.json
             gcloud config set project mlops489-425700
 
-      - name: Config GCP remote
-        run: |
-          dvc remote add -d remote_storage gs://mlops489-project
-          dvc remote modify remote_storage version_aware true
-
       - name: pull data into repository
         run: dvc pull
          
