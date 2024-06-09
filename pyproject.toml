@@ -20,7 +20,12 @@ rich = "^13.3.2"
 wandb = "^0.17.0"
 torch = "^2.3.0"
 snakeviz = "^2.2.0"
+google-api-python-client = "^2.132.0"
+fastapi = "^0.111.0"
+uvicorn = {extras = ["standard"], version = "^0.30.1"}
+pytest = "^7.0"
 pydantic = "^2.7.3"
+
 
 [tool.ruff]
 line-length = 120
