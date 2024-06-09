@@ -301,5 +301,20 @@ curl -X POST "http://127.0.0.1:8080/predict/" -H "Content-Type: application/json
 }'
 ```
 
+
+### Training
+#### Running Locally
+
+```
+docker build --platform linux/amd64 -t gcr.io/mlops489-425700/model-train:latest . -f model-train.dockerfile
+```
+
+```
+docker run \
+-v ~/.config/gcloud/application_default_credentials.json:/app/application_default_credentials.json \
+-e GOOGLE_APPLICATION_CREDENTIALS="/app/application_default_credentials.json" \
+gcr.io/mlops489-425700/model-train
+```
+
 ## Unit Testing
 ![unittesting](/images/UnitTest.png) 
