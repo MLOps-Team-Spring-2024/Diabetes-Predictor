@@ -299,3 +299,17 @@ curl -X POST "http://127.0.0.1:8080/predict/" -H "Content-Type: application/json
     "data": "{\"age\": 6, \"sex\": 1, \"high_chol\": 1, \"chol_check\": 1, \"bmi\": 41.0, \"smoker\": 1, \"heart_disease\": 0, \"phys_activity\": 1, \"fruits\": 0, \"veggies\": 0, \"hvy_alcohol_consump\": 0, \"gen_hlth\": 4, \"ment_hlth\": 30, \"phys_hlth\": 15, \"diff_walk\": 1, \"stroke\": 0, \"high_bp\": 1}"
 }'
 ```
+
+### Training
+#### Running Locally
+
+```
+docker build --platform linux/amd64 -t gcr.io/mlops489-425700/model-train:latest . -f model-train.dockerfile
+```
+
+```
+docker run \
+-v ~/.config/gcloud/application_default_credentials.json:/app/application_default_credentials.json \
+-e GOOGLE_APPLICATION_CREDENTIALS="/app/application_default_credentials.json" \
+gcr.io/mlops489-425700/model-train
+```

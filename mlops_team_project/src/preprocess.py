@@ -34,11 +34,6 @@ def train_test_split_and_write(
             df, labels_df, test_size=test_size, random_state=17
         )
 
-        X_train.to_csv(f"{write_path}/train_data.csv", index=False)
-        X_test.to_csv(f"{write_path}/test_data.csv", index=False)
-        y_train.to_csv(f"{write_path}/train_labels.csv", index=False)
-        y_test.to_csv(f"{write_path}/test_labels.csv", index=False)
-
         return X_train, X_test, y_train, y_test
     except KeyError as e:
         raise KeyError(
@@ -63,14 +58,5 @@ def min_max_scale_and_write(
     min_max_scaler = MinMaxScaler().fit(X_train)
     X_train_normalized = min_max_scaler.transform(X_train)
     X_test_normalized = min_max_scaler.transform(X_test)
-
-    features = list(X_train.columns)
-
-    pd.DataFrame(X_train_normalized, columns=features).to_csv(
-        f"{write_path}/train_data_normalized.csv", index=False
-    )
-    pd.DataFrame(X_test_normalized, columns=features).to_csv(
-        f"{write_path}/test_data_normalized.csv", index=False
-    )
 
     return X_train_normalized, X_test_normalized
