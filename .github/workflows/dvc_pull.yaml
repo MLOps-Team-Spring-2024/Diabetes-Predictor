@@ -61,7 +61,7 @@ jobs:
         run: |
           pip install poetry
           poetry install
-          poetry run python mlops_team_project/models/xgboost_model.py
+          poetry run python mlops_team_project/models/xgboost_model.py --read-local-data true
 
       - name: Write Report
         env:
