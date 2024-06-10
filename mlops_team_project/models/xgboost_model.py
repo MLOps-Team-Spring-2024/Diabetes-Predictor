@@ -194,8 +194,6 @@ def read_from_google(file_name: str):
     Creates a CML report that will get posted as a comment on a PR
     similar to logging, but for added visibility during code review
 """
-
-
 def creat_cml_report(y_test, preds, target_names):
     report = classification_report(y_test, preds, target_names=target_names)
     with open("classification_report.txt", "w") as outfile:
