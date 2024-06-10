@@ -1,4 +1,5 @@
 import argparse
+import io
 import logging
 import logging.config
 import os
@@ -12,6 +13,7 @@ import omegaconf
 import pandas as pd
 import wandb
 import xgboost as xgb
+from google.cloud import storage
 from hydra import compose, initialize
 from omegaconf import OmegaConf
 from omegaconf.dictconfig import DictConfig
@@ -21,7 +23,6 @@ from sklearn.model_selection import cross_val_score
 from torch.profiler import (
     ProfilerActivity,
     profile,
-    record_function,
     tensorboard_trace_handler,
 )
 
@@ -30,6 +31,14 @@ from mlops_team_project.src.preprocess import (
     train_test_split_and_write,
 )
 
+pytest_train_accuray = None
+pytest_test_accuracy = None
+pytest_X_train = None
+pytest_y_train = None
+pytest_X_test = None
+pytest_y_test = None
+pytest_preds = None
+
 
 @dataclass
 class ModelResponse:
@@ -37,7 +46,14 @@ class ModelResponse:
     test_accuracy: float
 
 
-def main(config: DictConfig, track_wandb: bool, wandb_project_name: str) -> None:
+BUCKET_NAME = "mlops489-project"
+
+client = storage.Client("mlops489-425700")
+
+
+def main(
+    config: DictConfig, track_wandb: bool, wandb_project_name: str, profile_perf: bool
+) -> None:
     """
     Main function that runs the necessary steps for modeling
 
@@ -54,7 +70,7 @@ def main(config: DictConfig, track_wandb: bool, wandb_project_name: str) -> None
     logger.info(f"conf = {OmegaConf.to_yaml(config)}")
     hydra_params = config.experiment
 
-    df = pd.read_csv("data/raw/diabetes_data.csv")
+    df = pd.read_csv(io.BytesIO(read_from_google("data/raw/diabetes_data.csv")))
 
     X_train, X_test, y_train, y_test = train_test_split_and_write(
         df=df, write_path="data/processed"
@@ -67,20 +83,41 @@ def main(config: DictConfig, track_wandb: bool, wandb_project_name: str) -> None
         NOTE: to profile over multiple runs, make sure to include prof.step() on each iteration
         ex: when looping, on each iteration include prof.step()
     """
-    prof_log: str = "./logs/profiling/model_run"
 
-    curr_env = os.getenv("IN_CONTAINER", False)
+    if profile_perf:
+        prof_log: str = "./logs/profiling/model_run"
 
-    if curr_env:
-        prof_log = os.getenv("PERF_DIR", prof_log)
+        curr_env = os.getenv("IN_CONTAINER", False)
 
-    # begin profile block
-    with profile(
-        activities=[ProfilerActivity.CPU],
-        record_shapes=True,
-        profile_memory=True,
-        on_trace_ready=tensorboard_trace_handler(prof_log),
-    ) as prof:
+        if curr_env:
+            prof_log = os.getenv("PERF_DIR", prof_log)
+
+        # begin profile block
+        with profile(
+            activities=[ProfilerActivity.CPU],
+            record_shapes=True,
+            profile_memory=True,
+            on_trace_ready=tensorboard_trace_handler(prof_log),
+        ) as prof:
+            model_response = model(
+                X_train=X_train_normalized,
+                X_test=X_test_normalized,
+                y_train=y_train,
+                y_test=y_test,
+                hyperparameters=hydra_params,
+            )
+
+            if track_wandb:
+                wandb_api_key = os.getenv("WANDB_API_KEY")
+                if wandb_api_key:
+                    wandb.login(key=wandb_api_key)
+                wandb.init(project=wandb_project_name)
+                wandb_config = wandb.config
+                wandb_config.config = hydra_params
+                wandb.log({"Train accuracy": model_response.train_accuracy})
+                wandb.log({"Test accuracy": model_response.test_accuracy})
+            prof.step()
+    else:
         model_response = model(
             X_train=X_train_normalized,
             X_test=X_test_normalized,
@@ -98,7 +135,6 @@ def main(config: DictConfig, track_wandb: bool, wandb_project_name: str) -> None
             wandb_config.config = hydra_params
             wandb.log({"Train accuracy": model_response.train_accuracy})
             wandb.log({"Test accuracy": model_response.test_accuracy})
-        prof.step()
 
 
 def model(
@@ -134,16 +170,41 @@ def model(
     train_accuracy = model.score(X_train, y_train)
     test_accuracy = model.score(X_test, y_test)
 
+    pytest_train_accuracy = train_accuracy
+    pytest_test_accuracy = test_accuracy
+    pytest_X_train = X_train
+    pytest_y_train = y_train
+    pytest_X_test = X_test
+    pytest_y_test = y_test
+    pytest_preds = preds
+
+    
     logging.info(
         f"cv scores = {cv_scores}\ncv scores avg = {cv_scores.mean()}\nTraining: {model.score(X_train, y_train)}, Testing: {model.score(X_test, y_test)}"
     )
 
     logging.info(classification_report(y_test, preds, target_names=target_names))
 
-    with open("models/xgboost_model.pkl", "wb") as file:
-        pickle.dump(model, file)
+    save_model_to_google(model)
 
     return ModelResponse(train_accuracy, test_accuracy)
+
+
+def read_from_google(file_name: str):
+    bucket = client.get_bucket(BUCKET_NAME)
+    blob = bucket.blob(file_name)
+    return blob.download_as_bytes()
+
+
+def save_model_to_google(model):
+    bytes_for_pickle = io.BytesIO()
+    pickle.dump(model, bytes_for_pickle)
+    bytes_for_pickle.seek(0)
+
+    bucket = client.get_bucket(BUCKET_NAME)
+
+    blob = bucket.blob("models/xgboost_model.pkl")
+    blob.upload_from_file(bytes_for_pickle, content_type="application/octet-stream")
 
 
 if __name__ == "__main__":
@@ -164,6 +225,7 @@ if __name__ == "__main__":
         default="se489-project",
         help="Project name for Weights and Biases",
     )
+    parser.add_argument("--profile", type=bool, default=False)
 
     args = parser.parse_args()
 
@@ -171,4 +233,4 @@ if __name__ == "__main__":
 
     with initialize(version_base=None, config_path="config"):
         hydra_params = compose(overrides=[f"+experiment={args.hydra_experiment}"])
-        main(hydra_params, args.wandb, args.wandb_project_name)
+        main(hydra_params, args.wandb, args.wandb_project_name, args.profile)
