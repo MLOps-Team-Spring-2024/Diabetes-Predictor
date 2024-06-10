@@ -22,10 +22,6 @@ repos:
     rev: 20.8b1
     hooks:
     - id: black
-#-   repo: https://gitlab.com/pycqa/flake8
- #   rev: 3.8.4
-  #  hooks:
-   # - id: flake8
 -   repo: https://github.com/timothycrosley/isort
     rev: 5.12.0
     hooks:
@@ -35,3 +31,12 @@ repos:
     hooks:
     - id: interrogate
       args: [-vv, -i, --fail-under=80]
+-   repo: local
+    hooks:
+    -   id: pytest
+        name: pytest
+        entry: poetry run pytest
+        language: system
+        types: [python]
+        pass_filenames: false
+        always_run: true
