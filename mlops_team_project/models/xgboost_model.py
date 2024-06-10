@@ -42,15 +42,15 @@ class ModelResponse:
 
 BUCKET_NAME = "mlops489-project"
 
-client = storage.Client("mlops489-425700")
+client = storage.Client("mlops489-425700") if os.environ.get('RUN_CML') is not "true" else None
 
 
 def main(
-    config: DictConfig,
-    track_wandb: bool,
-    wandb_project_name: str,
-    profile_perf: bool,
-    read_local_data: bool,
+        config: DictConfig,
+        track_wandb: bool,
+        wandb_project_name: str,
+        profile_perf: bool,
+        read_local_data: bool,
 ) -> None:
     """
     Main function that runs the necessary steps for modeling
@@ -179,7 +179,8 @@ def model(
     with open("models/xgboost_model.pkl", "wb") as file:
         pickle.dump(model, file)
 
-    save_model_to_google(model)
+    if os.environ.get('RUN_CML') is not 'true':
+        save_model_to_google(model)
 
     return ModelResponse(train_accuracy, test_accuracy)
 
@@ -194,6 +195,8 @@ def read_from_google(file_name: str):
     Creates a CML report that will get posted as a comment on a PR
     similar to logging, but for added visibility during code review
 """
+
+
 def creat_cml_report(y_test, preds, target_names):
     report = classification_report(y_test, preds, target_names=target_names)
     with open("classification_report.txt", "w") as outfile:
