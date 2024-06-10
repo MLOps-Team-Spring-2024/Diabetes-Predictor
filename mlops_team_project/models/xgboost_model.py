@@ -175,11 +175,9 @@ def model(
 
     if os.environ.get('RUN_CML') == 'true':
         creat_cml_report(y_test, preds, target_names)
-
-    with open("models/xgboost_model.pkl", "wb") as file:
-        pickle.dump(model, file)
-
-    if os.environ.get('RUN_CML') != 'true':
+    else:
+        with open("models/xgboost_model.pkl", "wb") as file:
+            pickle.dump(model, file)
         save_model_to_google(model)
 
     return ModelResponse(train_accuracy, test_accuracy)
