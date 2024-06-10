@@ -1,0 +1,57 @@
+name: Continuous ML Training
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  GCP_CRED: ${{ secrets.GCP_ACC }}
+
+
+jobs:
+  Run_CML:
+    needs: Run_DVC
+    runs-on: [ubuntu-latest]
+    env:
+      RUN_CML: "true"
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: confirm python setup
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - uses: iterative/setup-cml@v1
+
+      - name: Train model
+        run: |
+          pip install poetry
+          poetry install
+          poetry run python mlops_team_project/models/xgboost_model.py --read-local-data true
+
+      -   name: Debugging Info
+          run: |
+            ls -la
+            cat classification_report.txt
+
+      -   name: Upload confusion matrix artifact
+          uses: actions/upload-artifact@v3
+          with:
+            name: confusion-matrix
+            path: confusion_matrix.png
+
+      -   name: Write Report
+          env:
+            REPO_TOKEN: ${{ secrets.AUTO_REQUEST_PR  }} #might need to change
+          run: |
+            if [ -f "confusion_matrix.png" ]; then
+              REPORT="![confusion_matrix](./confusion_matrix.png)\n"
+              REPORT+=$(cat classification_report.txt)
+              echo -e "$REPORT" > report.md
+              cml comment create report.md
+            else
+              echo "File confusion_matrix.png does not exist."
+            fi
