@@ -39,6 +39,6 @@ jobs:
             gcloud config set project mlops489-425700
 
       - name: pull data into repository
-        run: dvc pull
+        run: dvc pull -f
          
       
