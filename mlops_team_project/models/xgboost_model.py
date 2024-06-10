@@ -82,10 +82,10 @@ def main(config: DictConfig, track_wandb: bool, wandb_project_name: str, profile
 
         # begin profile block
         with profile(
-            activities=[ProfilerActivity.CPU],
-            record_shapes=True,
-            profile_memory=True,
-            on_trace_ready=tensorboard_trace_handler(prof_log),
+                activities=[ProfilerActivity.CPU],
+                record_shapes=True,
+                profile_memory=True,
+                on_trace_ready=tensorboard_trace_handler(prof_log),
         ) as prof:
             model_response = model(
                 X_train=X_train_normalized,
@@ -126,12 +126,12 @@ def main(config: DictConfig, track_wandb: bool, wandb_project_name: str, profile
 
 
 def model(
-    X_train: np.ndarray,
-    X_test: np.ndarray,
-    y_train: np.ndarray,
-    y_test: np.ndarray,
-    hyperparameters: omegaconf.dictconfig.DictConfig,
-    target_names: List[str] = ["non-diabetic", "diabetic"],
+        X_train: np.ndarray,
+        X_test: np.ndarray,
+        y_train: np.ndarray,
+        y_test: np.ndarray,
+        hyperparameters: omegaconf.dictconfig.DictConfig,
+        target_names: List[str] = ["non-diabetic", "diabetic"],
 ) -> ModelResponse:
     """
     Runs the XGBoost model.
@@ -179,6 +179,8 @@ def model(
     Creates a CML report that will get posted as a comment on a PR
     similar to logging, but for added visibility during code review
 """
+
+
 def creat_cml_report(y_test, preds, target_names):
     report = classification_report(y_test, preds, target_names=target_names)
     with open("classification_report.txt", "w") as outfile:
@@ -190,7 +192,6 @@ def creat_cml_report(y_test, preds, target_names):
     display.plot(ax=ax)
 
     plt.savefig("confusion_matrix.png")
-
 
 
 def save_model_to_google(model):
