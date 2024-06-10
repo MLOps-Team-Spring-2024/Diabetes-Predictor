@@ -184,3 +184,5 @@ wandb
 
 #profiling and logs
 /logs/
+.dvc/cache
+.dvc/tmp

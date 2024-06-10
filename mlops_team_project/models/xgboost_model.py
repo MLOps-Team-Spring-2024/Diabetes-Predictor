@@ -8,8 +8,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import List
 
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 import omegaconf
 import pandas as pd
 import wandb
@@ -19,18 +19,13 @@ from hydra import compose, initialize
 from omegaconf import OmegaConf
 from omegaconf.dictconfig import DictConfig
 from rich.logging import RichHandler
-from sklearn.metrics import classification_report, confusion_matrix, ConfusionMatrixDisplay
+from sklearn.metrics import (ConfusionMatrixDisplay, classification_report,
+                             confusion_matrix)
 from sklearn.model_selection import cross_val_score
-from torch.profiler import (
-    ProfilerActivity,
-    profile,
-    tensorboard_trace_handler,
-)
+from torch.profiler import ProfilerActivity, profile, tensorboard_trace_handler
 
-from mlops_team_project.src.preprocess import (
-    min_max_scale_and_write,
-    train_test_split_and_write,
-)
+from mlops_team_project.src.preprocess import (min_max_scale_and_write,
+                                               train_test_split_and_write)
 
 pytest_train_accuray = None
 pytest_test_accuracy = None
@@ -52,9 +47,7 @@ BUCKET_NAME = "mlops489-project"
 client = storage.Client("mlops489-425700")
 
 
-def main(
-    config: DictConfig, track_wandb: bool, wandb_project_name: str, profile_perf: bool
-) -> None:
+def main(config: DictConfig, track_wandb: bool, wandb_project_name: str, profile_perf: bool) -> None:
     """
     Main function that runs the necessary steps for modeling
 
@@ -62,20 +55,16 @@ def main(
         config: hydra config which includes hyper parameters for xgboost
         track_wandb: boolean to determine if Weights and Biases is used
     """
-    logging.config.fileConfig(
-        Path(__file__).resolve().parent / "logging" / "logging.config"
-    )
+    logging.config.fileConfig(Path(__file__).resolve().parent / "logging" / "logging.config")
     logger = logging.getLogger(__name__)
     logger.root.handlers[0] = RichHandler(markup=True)
 
     logger.info(f"conf = {OmegaConf.to_yaml(config)}")
     hydra_params = config.experiment
 
-    df = pd.read_csv(io.BytesIO(read_from_google("data/raw/diabetes_data.csv")))
+    df = pd.read_csv("data/raw/diabetes_data.csv")
 
-    X_train, X_test, y_train, y_test = train_test_split_and_write(
-        df=df, write_path="data/processed"
-    )
+    X_train, X_test, y_train, y_test = train_test_split_and_write(df=df, write_path="data/processed")
 
     X_train_normalized, X_test_normalized = min_max_scale_and_write(
         X_train=X_train, X_test=X_test, write_path="data/processed"
@@ -171,15 +160,6 @@ def model(
     train_accuracy = model.score(X_train, y_train)
     test_accuracy = model.score(X_test, y_test)
 
-    pytest_train_accuracy = train_accuracy
-    pytest_test_accuracy = test_accuracy
-    pytest_X_train = X_train
-    pytest_y_train = y_train
-    pytest_X_test = X_test
-    pytest_y_test = y_test
-    pytest_preds = preds
-
-    
     logging.info(
         f"cv scores = {cv_scores}\ncv scores avg = {cv_scores.mean()}\nTraining: {model.score(X_train, y_train)}, Testing: {model.score(X_test, y_test)}"
     )
@@ -187,29 +167,23 @@ def model(
     logging.info(classification_report(y_test, preds, target_names=target_names))
 
     report = classification_report(y_test, preds, target_names=target_names)
-    with open("classification_report.txt", 'w') as outfile:
+    with open("classification_report.txt", "w") as outfile:
         outfile.write(report)
 
-    confmat = confusion_matrix(y_test, preds, target_names= target_names)
-    display = ConfusionMatrixDisplay(confusion_matrix= confmat)
+    confmat = confusion_matrix(y_test, preds, target_names=target_names)
+    display = ConfusionMatrixDisplay(confusion_matrix=confmat)
 
-    fig, ax= plt.subplots(figsize=(10, 8)) #may want to update the size
+    fig, ax = plt.subplots(figsize=(10, 8))  # may want to update the size
     display.plot(ax=ax)
 
-    plt.savefig('confusion_matrix.png')
+    plt.savefig("confusion_matrix.png")
 
     with open("models/xgboost_model.pkl", "wb") as file:
         pickle.dump(model, file)
-        
+
     save_model_to_google(model)
 
     return ModelResponse(train_accuracy, test_accuracy)
-
-
-def read_from_google(file_name: str):
-    bucket = client.get_bucket(BUCKET_NAME)
-    blob = bucket.blob(file_name)
-    return blob.download_as_bytes()
 
 
 def save_model_to_google(model):
@@ -232,9 +206,7 @@ if __name__ == "__main__":
         default="baseline",
         help="Hydra experiment yaml file",
     )
-    parser.add_argument(
-        "--wandb", type=bool, default=False, help="Track model with Weights and Biases"
-    )
+    parser.add_argument("--wandb", type=bool, default=False, help="Track model with Weights and Biases")
     parser.add_argument(
         "--wandb_project_name",
         type=str,
