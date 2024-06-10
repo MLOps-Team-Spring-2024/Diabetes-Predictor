@@ -166,17 +166,8 @@ def model(
 
     logging.info(classification_report(y_test, preds, target_names=target_names))
 
-    report = classification_report(y_test, preds, target_names=target_names)
-    with open("classification_report.txt", "w") as outfile:
-        outfile.write(report)
-
-    confmat = confusion_matrix(y_test, preds, target_names=target_names)
-    display = ConfusionMatrixDisplay(confusion_matrix=confmat)
-
-    fig, ax = plt.subplots(figsize=(10, 8))  # may want to update the size
-    display.plot(ax=ax)
-
-    plt.savefig("confusion_matrix.png")
+    if os.environ.get('RUN_CML') == 'true':
+        creat_cml_report(y_test, preds, target_names)
 
     with open("models/xgboost_model.pkl", "wb") as file:
         pickle.dump(model, file)
@@ -184,6 +175,24 @@ def model(
     save_model_to_google(model)
 
     return ModelResponse(train_accuracy, test_accuracy)
+
+
+"""
+    Creates a CML report that will get posted as a comment on a PR
+    similar to logging, but for added visibility during code review
+"""
+def creat_cml_report(y_test, preds, target_names):
+    report = classification_report(y_test, preds, target_names=target_names)
+    with open("classification_report.txt", "w") as outfile:
+        outfile.write(report)
+
+    confmat = confusion_matrix(y_test, preds, target_names=target_names)
+    display = ConfusionMatrixDisplay(confusion_matrix=confmat)
+    fig, ax = plt.subplots(figsize=(10, 8))  # may want to update the size
+    display.plot(ax=ax)
+
+    plt.savefig("confusion_matrix.png")
+
 
 
 def save_model_to_google(model):
