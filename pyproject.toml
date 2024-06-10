@@ -27,7 +27,9 @@ pytest = "^7.0"
 jupyterlab = "^4.1.8"
 ruff = "^0.4.2"
 mypy = "^1.10.0"
-
+isort = "^5.13.2"
+interrogate = "^1.7.0"
+pre-commit = "^3.7.1"
 
 [tool.ruff]
 line-length = 120
