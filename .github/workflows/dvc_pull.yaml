@@ -1,4 +1,4 @@
-name: Pull DVC Data
+name: Pull DVC Data and Run CML
 
 on:
   push:
@@ -10,7 +10,7 @@ env:
   GCP_CRED: ${{ secrets.GCP_ACC }}
 
 jobs:
-  build:
+  Run_DVC:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
@@ -42,3 +42,24 @@ jobs:
         run: dvc pull -f
          
       
+  Run_CML:
+    needs: Run_DVC
+    runs-on: [ubuntu-latest]
+    env:
+      RUN_CML: "true"
+    steps:
+      - uses: actions/checkout@v2
+      - uses: iterative/setup-cml@v1
+      - name: Train model
+        run: |
+          pip install poetry
+          poetry install
+          poetry run python mlops_team_project/models/xgboost_model.py
+
+      - name: Write Report
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }} #might need to change
+        run: |
+          cat classification_report.txt >> report.md
+          cml-publish confusion-matrix.png --md >> report.md
+          cml-send-comment report.md
