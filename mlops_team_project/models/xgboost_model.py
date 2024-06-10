@@ -52,7 +52,11 @@ client = storage.Client("mlops489-425700")
 
 
 def main(
-    config: DictConfig, track_wandb: bool, wandb_project_name: str, profile_perf: bool
+    config: DictConfig,
+    track_wandb: bool,
+    wandb_project_name: str,
+    profile_perf: bool,
+    read_local_data: bool,
 ) -> None:
     """
     Main function that runs the necessary steps for modeling
@@ -70,7 +74,10 @@ def main(
     logger.info(f"conf = {OmegaConf.to_yaml(config)}")
     hydra_params = config.experiment
 
-    df = pd.read_csv("data/raw/diabetes_data.csv")
+    if read_local_data:
+        df = pd.read_csv("data/raw/diabetes_data.csv")
+    else:
+        df = pd.read_csv(io.BytesIO(read_from_google("data/raw/diabetes_data.csv")))
 
     X_train, X_test, y_train, y_test = train_test_split_and_write(
         df=df, write_path="data/processed"
@@ -169,7 +176,7 @@ def model(
 
     train_accuracy = model.score(X_train, y_train)
     test_accuracy = model.score(X_test, y_test)
-    
+
     logging.info(
         f"cv scores = {cv_scores}\ncv scores avg = {cv_scores.mean()}\nTraining: {model.score(X_train, y_train)}, Testing: {model.score(X_test, y_test)}"
     )
@@ -179,6 +186,12 @@ def model(
     save_model_to_google(model)
 
     return ModelResponse(train_accuracy, test_accuracy)
+
+
+def read_from_google(file_name: str):
+    bucket = client.get_bucket(BUCKET_NAME)
+    blob = bucket.blob(file_name)
+    return blob.download_as_bytes()
 
 
 def save_model_to_google(model):
@@ -211,6 +224,7 @@ if __name__ == "__main__":
         help="Project name for Weights and Biases",
     )
     parser.add_argument("--profile", type=bool, default=False)
+    parser.add_argument("--read-local-data", type=bool, default=False)
 
     args = parser.parse_args()
 
@@ -218,4 +232,10 @@ if __name__ == "__main__":
 
     with initialize(version_base=None, config_path="config"):
         hydra_params = compose(overrides=[f"+experiment={args.hydra_experiment}"])
-        main(hydra_params, args.wandb, args.wandb_project_name, args.profile)
+        main(
+            hydra_params,
+            args.wandb,
+            args.wandb_project_name,
+            args.profile,
+            args.read_local_data,
+        )
