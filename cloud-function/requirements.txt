@@ -1,0 +1,5 @@
+functions-framework==3.*
+xgboost==2.0.3
+google-cloud-storage
+pydantic==2.7.3
+numpy== 1.26.4

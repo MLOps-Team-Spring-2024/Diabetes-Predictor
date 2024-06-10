@@ -1,4 +1,4 @@
-FROM python:3.11
+FROM python:3.11-slim
 LABEL authors="henry"
 
 RUN pip install poetry
@@ -13,11 +13,22 @@ ENV IN_CONTAINER Yes
 ENV LOG_DIR=/app/logs/logs/
 ENV PERF_DIR=/app/logs/profiling
 
+ENV POETRY_NO_INTERACTION=1 \
+    POETRY_VIRTUALENVS_IN_PROJECT=1 \
+    POETRY_VIRTUALENVS_CREATE=1 \
+    POETRY_CACHE_DIR=/tmp/poetry_cache
+
+ENV PYTHONPATH=/app
+
 RUN mkdir -p $LOG_DIR $PERF_DIR
 
 WORKDIR /app
 
-COPY . /app
+COPY pyproject.toml poetry.lock ./
+
+RUN poetry install --no-dev --no-root && rm -rf $POETRY_CACHE_DIR
+
+COPY mlops_team_project /app/mlops_team_project
 
 #Install dependencies, except dev dependencies just in case
 RUN poetry install --no-dev
