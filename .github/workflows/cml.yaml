@@ -36,6 +36,5 @@ jobs:
             REPO_TOKEN: ${{ secrets.AUTO_REQUEST_PR  }} #might need to change
           run:  |
             echo '![](./confusion_matrix.png)' >> report.md
-            echo classification_report.txt >> report.md
+            cat classification_report.txt >> report.md
             cml comment create --publish report.md
-          
