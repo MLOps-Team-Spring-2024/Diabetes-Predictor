@@ -45,7 +45,13 @@ BUCKET_NAME = "mlops489-project"
 client = storage.Client("mlops489-425700")
 
 
-def main(config: DictConfig, track_wandb: bool, wandb_project_name: str, profile_perf: bool) -> None:
+def main(
+    config: DictConfig,
+    track_wandb: bool,
+    wandb_project_name: str,
+    profile_perf: bool,
+    read_local_data: bool,
+) -> None:
     """
     Main function that runs the necessary steps for modeling
 
@@ -60,7 +66,10 @@ def main(config: DictConfig, track_wandb: bool, wandb_project_name: str, profile
     logger.info(f"conf = {OmegaConf.to_yaml(config)}")
     hydra_params = config.experiment
 
-    df = pd.read_csv("data/raw/diabetes_data.csv")
+    if read_local_data:
+        df = pd.read_csv("data/raw/diabetes_data.csv")
+    else:
+        df = pd.read_csv(io.BytesIO(read_from_google("data/raw/diabetes_data.csv")))
 
     X_train, X_test, y_train, y_test = train_test_split_and_write(df=df, write_path="data/processed")
 
@@ -175,6 +184,12 @@ def model(
     return ModelResponse(train_accuracy, test_accuracy)
 
 
+def read_from_google(file_name: str):
+    bucket = client.get_bucket(BUCKET_NAME)
+    blob = bucket.blob(file_name)
+    return blob.download_as_bytes()
+
+
 """
     Creates a CML report that will get posted as a comment on a PR
     similar to logging, but for added visibility during code review
@@ -222,6 +237,7 @@ if __name__ == "__main__":
         help="Project name for Weights and Biases",
     )
     parser.add_argument("--profile", type=bool, default=False)
+    parser.add_argument("--read-local-data", type=bool, default=False)
 
     args = parser.parse_args()
 
@@ -229,4 +245,10 @@ if __name__ == "__main__":
 
     with initialize(version_base=None, config_path="config"):
         hydra_params = compose(overrides=[f"+experiment={args.hydra_experiment}"])
-        main(hydra_params, args.wandb, args.wandb_project_name, args.profile)
+        main(
+            hydra_params,
+            args.wandb,
+            args.wandb_project_name,
+            args.profile,
+            args.read_local_data,
+        )
