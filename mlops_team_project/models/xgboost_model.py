@@ -70,7 +70,7 @@ def main(
     logger.info(f"conf = {OmegaConf.to_yaml(config)}")
     hydra_params = config.experiment
 
-    df = pd.read_csv(io.BytesIO(read_from_google("data/raw/diabetes_data.csv")))
+    df = pd.read_csv("data/raw/diabetes_data.csv")
 
     X_train, X_test, y_train, y_test = train_test_split_and_write(
         df=df, write_path="data/processed"
@@ -169,15 +169,6 @@ def model(
 
     train_accuracy = model.score(X_train, y_train)
     test_accuracy = model.score(X_test, y_test)
-
-    pytest_train_accuracy = train_accuracy
-    pytest_test_accuracy = test_accuracy
-    pytest_X_train = X_train
-    pytest_y_train = y_train
-    pytest_X_test = X_test
-    pytest_y_test = y_test
-    pytest_preds = preds
-
     
     logging.info(
         f"cv scores = {cv_scores}\ncv scores avg = {cv_scores.mean()}\nTraining: {model.score(X_train, y_train)}, Testing: {model.score(X_test, y_test)}"
@@ -188,12 +179,6 @@ def model(
     save_model_to_google(model)
 
     return ModelResponse(train_accuracy, test_accuracy)
-
-
-def read_from_google(file_name: str):
-    bucket = client.get_bucket(BUCKET_NAME)
-    blob = bucket.blob(file_name)
-    return blob.download_as_bytes()
 
 
 def save_model_to_google(model):
