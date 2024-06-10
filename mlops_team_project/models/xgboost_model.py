@@ -202,7 +202,7 @@ def creat_cml_report(y_test, preds, target_names: list[str]):
     with open("classification_report.txt", "w") as outfile:
         outfile.write(report)
 
-    confmat = confusion_matrix(y_test, preds, target_names=target_names)
+    confmat = confusion_matrix(y_test, preds)
     display = ConfusionMatrixDisplay(confusion_matrix=confmat)
     fig, ax = plt.subplots(figsize=(10, 8))  # may want to update the size
     display.plot(ax=ax)
