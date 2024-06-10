@@ -78,8 +78,11 @@ jobs:
           env:
             REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }} #might need to change
           run: |
-            if [ -f "confusion_matrix.png"]; then
-            REPORT= "![confusion_matrix](./confusion-matrix.png)\n"
-            REPORT+=$(cat classification_report.txt)
-            echo -e "$REPORT" > report.md
-            cml comment report.md
+            if [ -f "confusion_matrix.png" ]; then
+              REPORT="![confusion_matrix](./confusion_matrix.png)\n"
+              REPORT+=$(cat classification_report.txt)
+              echo -e "$REPORT" > report.md
+              cml comment report.md
+            else
+              echo "File confusion_matrix.png does not exist."
+            fi
