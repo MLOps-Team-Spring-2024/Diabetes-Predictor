@@ -6,9 +6,6 @@ on:
   pull_request:
     branches: [main]
 
-env:
-  GCP_CRED: ${{ secrets.GCP_ACC }}
-
 jobs:
   Run_DVC:
     runs-on: ubuntu-latest

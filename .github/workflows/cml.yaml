@@ -12,7 +12,6 @@ env:
 
 jobs:
   Run_CML:
-    needs: Run_DVC
     runs-on: [ubuntu-latest]
     env:
       RUN_CML: "true"
