@@ -68,5 +68,5 @@ jobs:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }} #might need to change
         run: |
           cat classification_report.txt >> report.md
-          cml-publish confusion-matrix.png --md >> report.md
+          cml-publish confusion_matrix.png --md >> report.md
           cml-send-comment report.md
