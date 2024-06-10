@@ -197,7 +197,7 @@ def read_from_google(file_name: str):
 """
 
 
-def creat_cml_report(y_test, preds, target_names):
+def creat_cml_report(y_test, preds, target_names: list[str]):
     report = classification_report(y_test, preds, target_names=target_names)
     with open("classification_report.txt", "w") as outfile:
         outfile.write(report)
