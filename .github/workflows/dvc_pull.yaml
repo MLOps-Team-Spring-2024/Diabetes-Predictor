@@ -40,8 +40,8 @@ jobs:
 
       - name: pull data into repository
         run: dvc pull -f
-         
-      
+
+
   Run_CML:
     needs: Run_DVC
     runs-on: [ubuntu-latest]
@@ -63,10 +63,23 @@ jobs:
           poetry install
           poetry run python mlops_team_project/models/xgboost_model.py --read-local-data true
 
-      - name: Write Report
-        env:
-          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }} #might need to change
-        run: |
-          cat classification_report.txt >> report.md
-          cml-publish confusion_matrix.png --md >> report.md
-          cml-send-comment report.md
+      -   name: Debugging Info
+          run: |
+            ls -la
+            cat classification_report.txt
+
+      -   name: Upload confusion matrix artifact
+          uses: actions/upload-artifact@v3
+          with:
+            name: confusion-matrix
+            path: confusion_matrix.png
+
+      -   name: Write Report
+          env:
+            REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }} #might need to change
+          run: |
+            if [ -f "confusion_matrix.png"]; then
+            REPORT= "![confusion_matrix](./confusion-matrix.png)\n"
+            REPORT+=$(cat classification_report.txt)
+            echo -e "$REPORT" > report.md
+            cml comment report.md
