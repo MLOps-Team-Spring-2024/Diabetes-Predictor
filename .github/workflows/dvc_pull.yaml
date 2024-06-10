@@ -23,13 +23,17 @@ jobs:
 
       - uses: iterative/setup-dvc@v1
 
+      - name: set up google cloud
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          service_account_key: ${{ secrets.GCP_ACC }}
+          export_default_credentials: true
+
       - name: set up GCP DVC
         run: pip install dvc-gs
 
-      - name: Get data
+      - name: Set Data target
         run: |
-            echo "${GCP_CRED}" > gcloud-key.json
-            gcloud auth activate-service-account --key-file=gcloud-key.json
             gcloud config set project mlops489-425700
 
       - name: pull data into repository
