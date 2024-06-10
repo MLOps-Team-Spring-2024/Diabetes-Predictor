@@ -6,8 +6,10 @@ repos:
     hooks:
     -   id: trailing-whitespace
     -   id: end-of-file-fixer
+        exclude: '\.dvc/'
     -   id: check-yaml
     -   id: check-added-large-files
+        exclude: '\.dvc/'
 -   repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.4.5
     hooks:
