@@ -42,7 +42,7 @@ class ModelResponse:
 
 BUCKET_NAME = "mlops489-project"
 
-client = storage.Client("mlops489-425700") if os.environ.get('RUN_CML') is not "true" else None
+client = storage.Client("mlops489-425700") if os.environ.get('RUN_CML') != "true" else None
 
 
 def main(
@@ -179,7 +179,7 @@ def model(
     with open("models/xgboost_model.pkl", "wb") as file:
         pickle.dump(model, file)
 
-    if os.environ.get('RUN_CML') is not 'true':
+    if os.environ.get('RUN_CML') != 'true':
         save_model_to_google(model)
 
     return ModelResponse(train_accuracy, test_accuracy)
