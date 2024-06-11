@@ -6,6 +6,8 @@ jobs:
   build:
     name: Run Unit Test
     runs-on: ubuntu-latest
+    env:
+      NO_STORAGE: "true"
     steps:
       - name: Checkout
         uses: actions/checkout@v2
