@@ -15,12 +15,14 @@ jobs:
       - uses: actions/setup-python@v5 
         with:
           python-version: 3.11
-      - run: pip install ruff
+      - run: pip install ruff black
       - run: |
           ruff check --fix
+      - run: |
+          black .
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: 'code style -w ruff'
+          commit_message: 'code style -w ruff and black'
           token: ${{ secrets.AUTO_REQUEST_PR }}
            
 
