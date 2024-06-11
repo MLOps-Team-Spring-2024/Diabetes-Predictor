@@ -19,17 +19,24 @@ def input_data():
     target_names = ["non-diabetic", "diabetic"]
     return X_train, X_test, y_train, y_test, target_names
 
+
 def test_model(input_data):
     """
-        Unit test for model size
+    Unit test for model size
     """
     X_train, X_test, y_train, y_test, target_names = input_data
 
-    with patch('mlops_team_project.models.xgboost_model.xgb.XGBClassifier') as xgb_model, \
-            patch('mlops_team_project.models.xgboost_model.cross_val_score') as cv_score, \
-            patch('mlops_team_project.models.xgboost_model.logging.info') as logging, \
-            patch('mlops_team_project.models.xgboost_model.save_model_to_google') as gcloud, \
-            patch('mlops_team_project.models.xgboost_model.classification_report') as classification_report:
+    with patch(
+        "mlops_team_project.models.xgboost_model.xgb.XGBClassifier"
+    ) as xgb_model, patch(
+        "mlops_team_project.models.xgboost_model.cross_val_score"
+    ) as cv_score, patch(
+        "mlops_team_project.models.xgboost_model.logging.info"
+    ) as logging, patch(
+        "mlops_team_project.models.xgboost_model.save_model_to_google"
+    ) as gcloud, patch(
+        "mlops_team_project.models.xgboost_model.classification_report"
+    ) as classification_report:
 
         mock_model = Mock()
         mock_model.predict.return_value = np.random.randint(2, size=y_train.shape)

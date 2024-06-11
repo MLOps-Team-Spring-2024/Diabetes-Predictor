@@ -22,7 +22,13 @@ def process_dataset():
         X_train, X_test, y_train, y_test = train_test_split_and_write(
             df=df, write_path="data/processed"
         )
-        return [X_train.shape[0], X_train.shape[1], X_test.shape[0], X_test.shape[1], len(y_train)]
+        return [
+            X_train.shape[0],
+            X_train.shape[1],
+            X_test.shape[0],
+            X_test.shape[1],
+            len(y_train),
+        ]
     except TypeError:
         print("Cannot Unpack Non-iterable !")
 
