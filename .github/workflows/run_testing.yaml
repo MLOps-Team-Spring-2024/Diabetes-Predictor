@@ -1,0 +1,26 @@
+name: Run Unit Tests
+
+on: [push]
+
+jobs:
+  build:
+    name: Run Unit Test
+    runs-on: ubuntu-latest
+    env:
+      NO_STORAGE: "true"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install poetry
+          poetry install
+
+      - name: Run Tests
+        run: poetry run pytest tests
