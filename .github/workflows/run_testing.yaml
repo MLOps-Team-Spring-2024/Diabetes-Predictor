@@ -15,8 +15,10 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install pytest
-        run: pip install pytest pytest-md pytest-emoji
+      - name: Install dependencies
+        run: |
+          pip install poetry
+          poetry install
 
       - name: Run Tests
         uses: pavelzw/pytest-action@v2.2.0
