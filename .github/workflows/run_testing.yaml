@@ -21,10 +21,4 @@ jobs:
           poetry install
 
       - name: Run Tests
-        uses: pavelzw/pytest-action@v2.2.0
-        with:
-          verbose: true
-          emoji: true
-          job-summary: true
-          click-to-expand: true
-          report-title: 'Test Report'
+        run: poetry run pytest tests
