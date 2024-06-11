@@ -173,7 +173,7 @@ dev:
 * pre-commit = "^3.7.1"
 
 ## Contributions
-Doc file containing detailed task and contribution
+Doc file containing detailed task and contribution  
 [Part 1](/docs/project_1_tasks.txt)  
 [Part 2](/docs/project_2_tasks.txt)  
 [Part 3](/docs/project_3_tasks.txt)
