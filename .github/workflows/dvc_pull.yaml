@@ -6,11 +6,8 @@ on:
   pull_request:
     branches: [main]
 
-env:
-  GCP_CRED: ${{ secrets.GCP_ACC }}
-
 jobs:
-  build:
+  Run_DVC:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
@@ -40,5 +37,3 @@ jobs:
 
       - name: pull data into repository
         run: dvc pull -f
-         
-      

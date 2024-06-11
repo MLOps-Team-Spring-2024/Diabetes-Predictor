@@ -17,8 +17,10 @@ rich = "^13.3.2"
 wandb = "^0.17.0"
 torch = "^2.3.0"
 snakeviz = "^2.2.0"
+matplotlib = "^3.9.0"
 pydantic = "^2.7.3"
 google-cloud-storage = "^2.16.0"
+
 
 [tool.poetry.dev-dependencies]
 dvc = "^3.51.2"

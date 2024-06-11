@@ -1,0 +1,40 @@
+name: Continuous ML Training
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  GCP_CRED: ${{ secrets.GCP_ACC }}
+
+
+jobs:
+  Run_CML:
+    runs-on: [ubuntu-latest]
+    env:
+      RUN_CML: "true"
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: confirm python setup
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - uses: iterative/setup-cml@v2
+
+      - name: Train model
+        run: |
+          pip install poetry
+          poetry install --no-dev
+          poetry run python mlops_team_project/models/xgboost_model.py --read-local-data true
+
+      -   name: Write Report
+          env:
+            REPO_TOKEN: ${{ secrets.AUTO_REQUEST_PR  }} #might need to change
+          run:  |
+            echo '![](./confusion_matrix.png)' >> report.md
+            cat classification_report.txt >> report.md
+            cml comment create --publish report.md

@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import List
 
+import matplotlib.pyplot as plt
 import numpy as np
 import omegaconf
 import pandas as pd
@@ -18,18 +19,11 @@ from hydra import compose, initialize
 from omegaconf import OmegaConf
 from omegaconf.dictconfig import DictConfig
 from rich.logging import RichHandler
-from sklearn.metrics import classification_report
+from sklearn.metrics import ConfusionMatrixDisplay, classification_report, confusion_matrix
 from sklearn.model_selection import cross_val_score
-from torch.profiler import (
-    ProfilerActivity,
-    profile,
-    tensorboard_trace_handler,
-)
+from torch.profiler import ProfilerActivity, profile, tensorboard_trace_handler
 
-from mlops_team_project.src.preprocess import (
-    min_max_scale_and_write,
-    train_test_split_and_write,
-)
+from mlops_team_project.src.preprocess import min_max_scale_and_write, train_test_split_and_write
 
 pytest_train_accuray = None
 pytest_test_accuracy = None
@@ -48,15 +42,15 @@ class ModelResponse:
 
 BUCKET_NAME = "mlops489-project"
 
-client = storage.Client("mlops489-425700")
+client = storage.Client("mlops489-425700") if os.environ.get('RUN_CML') != "true" else None
 
 
 def main(
-    config: DictConfig,
-    track_wandb: bool,
-    wandb_project_name: str,
-    profile_perf: bool,
-    read_local_data: bool,
+        config: DictConfig,
+        track_wandb: bool,
+        wandb_project_name: str,
+        profile_perf: bool,
+        read_local_data: bool,
 ) -> None:
     """
     Main function that runs the necessary steps for modeling
@@ -65,9 +59,7 @@ def main(
         config: hydra config which includes hyper parameters for xgboost
         track_wandb: boolean to determine if Weights and Biases is used
     """
-    logging.config.fileConfig(
-        Path(__file__).resolve().parent / "logging" / "logging.config"
-    )
+    logging.config.fileConfig(Path(__file__).resolve().parent / "logging" / "logging.config")
     logger = logging.getLogger(__name__)
     logger.root.handlers[0] = RichHandler(markup=True)
 
@@ -79,9 +71,7 @@ def main(
     else:
         df = pd.read_csv(io.BytesIO(read_from_google("data/raw/diabetes_data.csv")))
 
-    X_train, X_test, y_train, y_test = train_test_split_and_write(
-        df=df, write_path="data/processed"
-    )
+    X_train, X_test, y_train, y_test = train_test_split_and_write(df=df, write_path="data/processed")
 
     X_train_normalized, X_test_normalized = min_max_scale_and_write(
         X_train=X_train, X_test=X_test, write_path="data/processed"
@@ -101,10 +91,10 @@ def main(
 
         # begin profile block
         with profile(
-            activities=[ProfilerActivity.CPU],
-            record_shapes=True,
-            profile_memory=True,
-            on_trace_ready=tensorboard_trace_handler(prof_log),
+                activities=[ProfilerActivity.CPU],
+                record_shapes=True,
+                profile_memory=True,
+                on_trace_ready=tensorboard_trace_handler(prof_log),
         ) as prof:
             model_response = model(
                 X_train=X_train_normalized,
@@ -145,12 +135,12 @@ def main(
 
 
 def model(
-    X_train: np.ndarray,
-    X_test: np.ndarray,
-    y_train: np.ndarray,
-    y_test: np.ndarray,
-    hyperparameters: omegaconf.dictconfig.DictConfig,
-    target_names: List[str] = ["non-diabetic", "diabetic"],
+        X_train: np.ndarray,
+        X_test: np.ndarray,
+        y_train: np.ndarray,
+        y_test: np.ndarray,
+        hyperparameters: omegaconf.dictconfig.DictConfig,
+        target_names: List[str] = ["non-diabetic", "diabetic"],
 ) -> ModelResponse:
     """
     Runs the XGBoost model.
@@ -183,7 +173,10 @@ def model(
 
     logging.info(classification_report(y_test, preds, target_names=target_names))
 
-    save_model_to_google(model)
+    if os.environ.get('RUN_CML') == 'true':
+        creat_cml_report(y_test, preds, target_names)
+    else:
+        save_model_to_google(model)
 
     return ModelResponse(train_accuracy, test_accuracy)
 
@@ -192,6 +185,25 @@ def read_from_google(file_name: str):
     bucket = client.get_bucket(BUCKET_NAME)
     blob = bucket.blob(file_name)
     return blob.download_as_bytes()
+
+
+"""
+    Creates a CML report that will get posted as a comment on a PR
+    similar to logging, but for added visibility during code review
+"""
+
+
+def creat_cml_report(y_test, preds, target_names: list[str]):
+    report = classification_report(y_test, preds, target_names=target_names)
+    with open("classification_report.txt", "w") as outfile:
+        outfile.write(report)
+
+    confmat = confusion_matrix(y_test, preds)
+    display = ConfusionMatrixDisplay(confusion_matrix=confmat)
+    fig, ax = plt.subplots(figsize=(10, 8))  # may want to update the size
+    display.plot(ax=ax)
+
+    plt.savefig("confusion_matrix.png")
 
 
 def save_model_to_google(model):
@@ -214,9 +226,7 @@ if __name__ == "__main__":
         default="baseline",
         help="Hydra experiment yaml file",
     )
-    parser.add_argument(
-        "--wandb", type=bool, default=False, help="Track model with Weights and Biases"
-    )
+    parser.add_argument("--wandb", type=bool, default=False, help="Track model with Weights and Biases")
     parser.add_argument(
         "--wandb_project_name",
         type=str,
