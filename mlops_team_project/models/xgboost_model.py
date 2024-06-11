@@ -19,13 +19,11 @@ from hydra import compose, initialize
 from omegaconf import OmegaConf
 from omegaconf.dictconfig import DictConfig
 from rich.logging import RichHandler
-from sklearn.metrics import (ConfusionMatrixDisplay, classification_report,
-                             confusion_matrix)
+from sklearn.metrics import ConfusionMatrixDisplay, classification_report, confusion_matrix
 from sklearn.model_selection import cross_val_score
 from torch.profiler import ProfilerActivity, profile, tensorboard_trace_handler
 
-from mlops_team_project.src.preprocess import (min_max_scale_and_write,
-                                               train_test_split_and_write)
+from mlops_team_project.src.preprocess import min_max_scale_and_write, train_test_split_and_write
 
 pytest_train_accuray = None
 pytest_test_accuracy = None
@@ -44,7 +42,7 @@ class ModelResponse:
 
 BUCKET_NAME = "mlops489-project"
 
-client = storage.Client("mlops489-425700") if os.environ.get('NO_CLOUD') != "true" else None
+client = storage.Client("mlops489-425700") if os.environ.get('RUN_CML') != "true" else None
 
 
 def main(
@@ -175,7 +173,7 @@ def model(
 
     logging.info(classification_report(y_test, preds, target_names=target_names))
 
-    if os.environ.get('NO_CLOUD') == 'true':
+    if os.environ.get('RUN_CML') == 'true':
         creat_cml_report(y_test, preds, target_names)
     else:
         save_model_to_google(model)

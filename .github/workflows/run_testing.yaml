@@ -5,8 +5,6 @@ on: [push, pull_request]
 jobs:
   build:
     name: Run Unit Test
-    env:
-      NO_CLOUD: "true"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
