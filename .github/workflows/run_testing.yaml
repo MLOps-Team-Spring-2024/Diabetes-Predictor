@@ -1,0 +1,25 @@
+name: Run Unit Tests
+
+on: [push]
+
+jobs:
+  build:
+    name: Run Unit Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.11
+      - name: Install pytest
+        run: pip install pytest pytest-md pytest-emoji
+      - name: Run Tests
+      - uses: pavelzw/pytest-action@v2.2.0
+        with:
+          verbose: true
+          emoji: true
+          job-summary: true
+          click-to-expand: true
+          report-title: 'Test Report'
