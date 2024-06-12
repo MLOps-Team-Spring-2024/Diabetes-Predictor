@@ -2,9 +2,9 @@
 # Spring 2024 MLOps Team Project: Diabetes-Predictor
 
 ## Team Members
-Herny deBuchananne  
-Matthew Soria  
-Allan Guan  
+Henry deBuchananne
+Matthew Soria
+Allan Guan
 
 ## Project Description
 Diabetes is a significant health concern in the United States, affecting millions of individuals. According to the latest statistics, about 37.3 million Americans, or 11.3% of the population, are living with diabetes. This condition, which can lead to severe health complications such as heart disease, kidney failure, and blindness, is also a major cause of disability and mortality. The cost of managing diabetes is substantial, with billions spent each year on healthcare services, medications, and lost productivity. Efforts to improve diabetes management and prevention are crucial in addressing this public health issue .
@@ -17,15 +17,15 @@ The model primary objective is to facilitate the development and validation of p
 Additional scope and objective information can be found [here](./docs/source/overview.md)
 
 ## Phase 1
-Phase 1 documentation can be found [here](./docs/source/phase_1.md)  
+Phase 1 documentation can be found [here](./docs/source/phase_1.md)
 
 ## Phase 2
-Phase 2 documentation can be found [here](./docs/source/phase_2.md)  
+Phase 2 documentation can be found [here](./docs/source/phase_2.md)
 
 ## Phase 3
-Phase 3 documentation can be found [here](./docs/source/phase_3.md)  
+Phase 3 documentation can be found [here](./docs/source/phase_3.md)
 
-## Project structure 
+## Project structure
 <details>
 
 The directory structure of the project looks like this:
@@ -83,13 +83,13 @@ The directory structure of the project looks like this:
 │   ├── src                    <- Scripts to create exploratory and results oriented visualizations
 │       |
 │       └── preprocess.py      <- Functions that split into train/test and normalize
-│   
+│
 └── LICENSE                    <- Open-source license if one is chosen
 ```
 
 </details>
 
-## Setting Up Environment 
+## Setting Up Environment
 #### Using Poetry
 
 The virtual environment for this project uses Poetry, which needs to be set up on your local machine.
@@ -123,20 +123,20 @@ If you want to add dependencies to the project, it is as simple as running
 poetry add <dependency>
 ```
 
-Which will automatically add the dependency to the `pyproject.toml` file. 
+Which will automatically add the dependency to the `pyproject.toml` file.
 Removing it is just as simple
 
 ```console
 poetry remove <dependency>
 ```
 
-To exit the virtual environment you can run 
+To exit the virtual environment you can run
 
 ```console
 exit
 ```
 
-This doesn't necessarily deactive the environment. To do this you must the following command within the shell.
+This doesn't necessarily deactivate the environment. To do this you must the following command within the shell.
 
 ```console
 deactivate
@@ -173,7 +173,7 @@ dev:
 * pre-commit = "^3.7.1"
 
 ## Contributions
-Doc file containing detailed task and contribution  
-[Part 1](/docs/project_1_tasks.txt)  
-[Part 2](/docs/project_2_tasks.txt)  
+Doc file containing detailed task and contribution
+[Part 1](/docs/project_1_tasks.txt)
+[Part 2](/docs/project_2_tasks.txt)
 [Part 3](/docs/project_3_tasks.txt)
