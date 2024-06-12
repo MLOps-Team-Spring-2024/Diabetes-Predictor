@@ -180,5 +180,84 @@ In this example the prediction is non-diabetic
 
 ![cloudrun](../../images/cloudrun.png)
 
+## CI/CD 
+
+This projects implements a series of code checks and runners for our CI/CD pipeline through GitHub Actions
+
+### cml
+
+Runs our Continuous Machine Learning worker, more info can be found [here](#continuous-machine-learning)
+
+### dvc_pull
+
+To maintain updated local data for our project, we implement Data Version Control. To do this, we have a github action that runs on every pull_request and push to the Main branch.
+This GitHub action communicates with our cloud data storage to pull updated data into our repository for local and limited deployed use.
+
+### mypy_check
+
+This GitHub action runs our MyPy testing against the environment (ignoring missing imports). If there are any violations to the project's mypy configuration, it will not allow merging of the branch.
+
+### request_pr_review
+
+Configured to automatically request PR reviews from available teammates. Will request from all that are not the creator of the branch. The configuration for this is found in `.github/auto_request_review.yml`
+
+### ruff_lint
+
+This GitHub action is a linter that runs ruff to identify any code style issues, and commits any necessary changes created by `ruff --fix`. This also runs black, which 
+performs further code styling checks according to Pep 8 style guides.
+
+### run_testing
+
+The final GitHub Action runs our unit tests on every 'push' to the remote branch. This runs the entire test suite, and any errors will prevent the merging of this branch. These issues should have been picked up during pre-commit.
+
+## Continuous Machine Learning
+
+This project implements Continuous Machine Learning to keep track of any changes that may occur to our model over time. This takes shape through the `cml.yaml` GitHub action.
+This action runs on every push and pull-request and starts by setting up our python environment, and utilizes the GitHub Marketplace Action created by Iterative.ai to set up our CML integration. This will then run our
+`xgboost_model.py` file, reading local data, and at the end it will create a comment on the pull request that will include a confusion matrix and classification report created by the `sklearn.metrics` library.
+The final output will look like the following:
+
+
+Note that this will read from the local data on the project.
+
+## Pre-Commit Hooks
+
+To maintain consistency across individual contributors, we have implemented `pre-commit` to ensure coding standards are followed.
+The hooks we chose are found within the root directory, in the `.pre-commit-config.yaml`.
+Again, these are mostly done to enforce formatting rules across our project. We have set up the following hooks
+* trailing-whitespace: This trims down the amount of whitespace at the end of the file, preventing the commit of a large amount of uneccessary empty space.
+* end-of-file-fixer: At the same time, we do want to ensure our files ends with a new-line, and nothing else
+* check-yaml: checks our yaml syntax, if any errors appear in our .yaml files, the entire file fails
+* check-added-large-files: this allows us to ensure that our code is modular. At the time of writing, this ignores DVC
+* isort: helps organize our imports in alphabetical order, making it easier to manage
+* interrogate: this will fail if the added functions lack docstrings, which helps us enforce good in-code documentation
+* PyTest: runs our unit tests on-commit
+
+Note that Ruff and Black are not used in pre-commits. These have been implemented in the GitHub action `ruff_lint.yaml` as a final formatting move.
+
+If you would like to further configure the pre-commit hooks, you must do so in the `.pre-commit-config.yaml` file. Each commit hook has further configuration
+that you can find in the respective repository listed for each commit hook.
+
+On a successful pre-commit, the output will look like the following:
+
+On a failed pre-commit run, the output will look like the following:
+
+Interrogate will, on a failure, display a chart that outlines the failed metrics:
+
 ## Unit Testing
-![unittesting](../../images/UnitTest.png) 
+
+Unit tests are found in the tests directory. The two main tests that we have are `test_model.py` and `test_data.py`.
+These tests can be run manually from the root directory of the project by running `poetry run pytest tests`, or individually `poetry run pytest tests/<desired test>`
+
+These tests are run automatically on push through the GitHub Action `run_testing.yaml` and on every commit through the pre-commit hook set up on this repository.
+
+### test_model.py
+
+This tests the scope of the model, mocking our XGBoost model and applying a set of dummy data to confirm that the resultant model has the correct shape
+on the `assert mock_model.predict.return_value.shape == y_test.shape`, along with the mocked accuracy values.
+
+### test_data.py
+
+This tests the data processing capabilities of the project. We create a processed dataset through the functionality in our preprocess file, and assert the output against
+the values defined in our test function. This test was defined to ensure that our pulled data is what we expect, utilizing the (hopefully) most updated data in our local storage
+set by DVC.
