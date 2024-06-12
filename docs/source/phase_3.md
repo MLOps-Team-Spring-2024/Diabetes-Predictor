@@ -217,6 +217,7 @@ This action runs on every push and pull-request and starts by setting up our pyt
 `xgboost_model.py` file, reading local data, and at the end it will create a comment on the pull request that will include a confusion matrix and classification report created by the `sklearn.metrics` library.
 The final output will look like the following:
 
+![gcr](../../images/cml-output.PNG) 
 
 Note that this will read from the local data on the project.
 
@@ -233,16 +234,22 @@ Again, these are mostly done to enforce formatting rules across our project. We 
 * interrogate: this will fail if the added functions lack docstrings, which helps us enforce good in-code documentation
 * PyTest: runs our unit tests on-commit
 
-Note that Ruff and Black are not used in pre-commits. These have been implemented in the GitHub action `ruff_lint.yaml` as a final formatting move.
+Note that Ruff and Black are not used in pre-commits. These have been implemented in the GitHub action `ruff_lint.yaml` as a final formatting action.
 
 If you would like to further configure the pre-commit hooks, you must do so in the `.pre-commit-config.yaml` file. Each commit hook has further configuration
 that you can find in the respective repository listed for each commit hook.
 
 On a successful pre-commit, the output will look like the following:
 
+![gcr](../../images/pre-commit-success.PNG) 
+
 On a failed pre-commit run, the output will look like the following:
 
+![gcr](../../images/pre-commit-fail.PNG)
+
 Interrogate will, on a failure, display a chart that outlines the failed metrics:
+
+![gcr](../../images/interrogate-fail.PNG)
 
 ## Unit Testing
 
@@ -250,6 +257,9 @@ Unit tests are found in the tests directory. The two main tests that we have are
 These tests can be run manually from the root directory of the project by running `poetry run pytest tests`, or individually `poetry run pytest tests/<desired test>`
 
 These tests are run automatically on push through the GitHub Action `run_testing.yaml` and on every commit through the pre-commit hook set up on this repository.
+
+On a successful run, the terminal will output the following:
+![gcr](../../images/unit_testing.PNG)
 
 ### test_model.py
 
