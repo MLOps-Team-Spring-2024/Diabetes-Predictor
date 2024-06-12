@@ -43,7 +43,7 @@ BUCKET_NAME = "mlops489-project"
 
 client = (
     storage.Client("mlops489-425700")
-    if (os.environ.get("RUN_CML") != "true" and os.environ.get("NO_STORAGE") != "true")
+    if (os.environ.get("NO_STORAGE") != "true")
     else None
 )
 
@@ -180,8 +180,8 @@ def model(
 
     logging.info(classification_report(y_test, preds, target_names=target_names))
 
-    if os.environ.get("RUN_CML") == "true":
-        creat_cml_report(y_test, preds, target_names)
+    if os.environ.get("NO_STORAGE") == "true":
+        create_cml_report(y_test, preds, target_names)
     else:
         save_model_to_google(model)
 
@@ -194,20 +194,18 @@ def read_from_google(file_name: str):
     return blob.download_as_bytes()
 
 
-"""
+def create_cml_report(y_test, preds, target_names: list[str]):
+    """
     Creates a CML report that will get posted as a comment on a PR
     similar to logging, but for added visibility during code review
-"""
-
-
-def creat_cml_report(y_test, preds, target_names: list[str]):
+    """
     report = classification_report(y_test, preds, target_names=target_names)
     with open("classification_report.txt", "w") as outfile:
         outfile.write(report)
 
     confmat = confusion_matrix(y_test, preds)
     display = ConfusionMatrixDisplay(confusion_matrix=confmat)
-    fig, ax = plt.subplots(figsize=(10, 8))  # may want to update the size
+    fig, ax = plt.subplots(figsize=(8, 6))
     display.plot(ax=ax)
 
     plt.savefig("confusion_matrix.png")

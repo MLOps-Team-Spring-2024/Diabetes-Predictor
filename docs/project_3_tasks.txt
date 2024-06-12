@@ -1,7 +1,13 @@
 Henry deBuchananne:
+- Unit Testing -> model
+- GitHub Actions -> DVC, Pytest, CML
+- DVC integration
+- Pre-Commit Hooks
 
 Allan:
+- Unit Testing -> data
 
 Matt Soria:
 - FastApi
 - GCP
+- Docker

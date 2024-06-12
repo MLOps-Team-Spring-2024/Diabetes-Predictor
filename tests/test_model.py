@@ -36,7 +36,9 @@ def test_model(input_data):
         "mlops_team_project.models.xgboost_model.save_model_to_google"
     ) as gcloud, patch(
         "mlops_team_project.models.xgboost_model.classification_report"
-    ) as classification_report:
+    ) as classification_report, patch(
+        "mlops_team_project.models.xgboost_model.create_cml_report"
+    ) as create_cml_report:
 
         mock_model = Mock()
         mock_model.predict.return_value = np.random.randint(2, size=y_train.shape)
