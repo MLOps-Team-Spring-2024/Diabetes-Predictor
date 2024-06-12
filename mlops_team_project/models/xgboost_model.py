@@ -38,7 +38,7 @@ BUCKET_NAME = "mlops489-project"
 
 client = (
     storage.Client("mlops489-425700")
-    if (os.environ.get("RUN_CML") != "true" and os.environ.get("NO_STORAGE") != "true")
+    if (os.environ.get("NO_STORAGE") != "true")
     else None
 )
 
@@ -175,8 +175,8 @@ def model(
 
     logging.info(classification_report(y_test, preds, target_names=target_names))
 
-    if os.environ.get("RUN_CML") == "true":
-        creat_cml_report(y_test, preds, target_names)
+    if os.environ.get("NO_STORAGE") == "true":
+        create_cml_report(y_test, preds, target_names)
     else:
         save_model_to_google(model)
 
@@ -195,7 +195,7 @@ def read_from_google(file_name: str):
 """
 
 
-def creat_cml_report(y_test, preds, target_names: list[str]):
+def create_cml_report(y_test, preds, target_names: list[str]):
     report = classification_report(y_test, preds, target_names=target_names)
     with open("classification_report.txt", "w") as outfile:
         outfile.write(report)

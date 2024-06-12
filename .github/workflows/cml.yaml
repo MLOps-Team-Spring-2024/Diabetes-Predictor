@@ -14,7 +14,7 @@ jobs:
   Run_CML:
     runs-on: [ubuntu-latest]
     env:
-      RUN_CML: "true"
+      NO_STORAGE: "true"
     steps:
       - uses: actions/checkout@v2
 
