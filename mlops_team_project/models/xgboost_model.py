@@ -19,13 +19,18 @@ from hydra import compose, initialize
 from omegaconf import OmegaConf
 from omegaconf.dictconfig import DictConfig
 from rich.logging import RichHandler
-from sklearn.metrics import (ConfusionMatrixDisplay, classification_report,
-                             confusion_matrix)
+from sklearn.metrics import (
+    ConfusionMatrixDisplay,
+    classification_report,
+    confusion_matrix,
+)
 from sklearn.model_selection import cross_val_score
 from torch.profiler import ProfilerActivity, profile, tensorboard_trace_handler
 
-from mlops_team_project.src.preprocess import (min_max_scale_and_write,
-                                               train_test_split_and_write)
+from mlops_team_project.src.preprocess import (
+    min_max_scale_and_write,
+    train_test_split_and_write,
+)
 
 
 @dataclass
